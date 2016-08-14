@@ -68,4 +68,15 @@ public class Entity
 
         return false;
     }
+
+    public bool HasMatcher(Matcher matcher)
+    {
+        foreach(IComponent cmp in components)
+        {
+            if (cmp.matcher.Equals(matcher))
+                return true;
+        }
+
+        return false;
+    }
 }
