@@ -22,17 +22,15 @@ public class Entity
         components = null;
     }
 
-    public void AddComponent<T>(bool notifySystems = true) where T : class, IComponent
+    public void AddComponent(IComponent cmp, bool notifySystems = true)
     {
-        IComponent cmp = T as IComponent;
-
         if (cmp == null)
         {
             Console.Write("Component that you intented to add is null, method will return void");
             return;
         }
 
-        components.Add(T);
+        components.Add(cmp);
         cmp.entity = this;
 
         if (notifySystems)
