@@ -22,16 +22,23 @@ public class Entity
         components = null;
     }
 
-    public void AddComponent(IComponent newCompoent)
+    public void AddComponent<T>(bool notifySystems = true) where T : class, IComponent
     {
-        if (newCompoent == null)
+        IComponent cmp = T as IComponent;
+
+        if (cmp == null)
         {
             Console.Write("Component that you intented to add is null, method will return void");
             return;
         }
 
-        components.Add(newCompoent);
-        newCompoent.entity = this;
+        components.Add(T);
+        cmp.entity = this;
+
+        if (notifySystems)
+        {
+            SystemMatcher.NotifySystems(cmp.matcher);
+        }
     }
 
     public void RemoveComponent<T>() where T : class, IComponent
