@@ -14,6 +14,11 @@ public class Entity
         components = new List<IComponent>();
     }
 
+    ~Entity()
+    {
+        RemoveAllComponent();
+    }
+
     public void AddComponent(IComponent newCompoent)
     {
         if (newCompoent == null)
@@ -47,6 +52,8 @@ public class Entity
             components[i].entity = null;
             components.RemoveAt(i);
         }
+
+        components.Clear();
     }
 
     public bool HasComponent<T>() where T : class, IComponent
