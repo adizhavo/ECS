@@ -5,11 +5,17 @@ public static class EntityMatcher
 {
     private static List<Entity> registeredEntities = new List<Entity>();
 
+    public delegate void EntityAdded(Entity ent);
+    public static event EntityAdded OnEntityRegistered;
+
     // This will be called autatically by the Entity constructor
     public static void SubscribeEntity(Entity entity)
     {
         if (!registeredEntities.Contains(entity))
+        {
             registeredEntities.Add(entity);
+            if (OnEntityRegistered != null) OnEntityRegistered(entity);
+        }
         else
         {
             Console.Write("Entity is already registered");
