@@ -27,6 +27,13 @@ public static class SystemMatcher
 
     public static void NotifySystems()
     {
-        // will notify all subscribed systems with all/any matcher
+        foreach(IEntitySystem systems in subscribedSystems)
+        {
+            List<Entity> allMatchers = EntityMatcher.GetEntitiesWithAllMatches(systems.systemMatchers);
+            List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(systems.systemMatchers);
+
+            systems.AllMatchers(allMatchers);
+            systems.AnyMatchers(anyMatch);
+        }
     }
 }
