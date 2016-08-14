@@ -46,13 +46,13 @@ public static class EntityMatcher
         return matchedEntities;
     }
 
-    public static List<Entity> GetEntitiesWithMatch(Matcher matcher)
+    public static List<Entity> GetEntitiesWithMatch(params Matcher[] matcher)
     {
         List<Entity> matchedEntities = new List<Entity>();
 
         foreach(Entity ent in subscribedEntities)
         {
-            if (ent.HasMatcher(matcher))
+            if (ent.HasMatchers(matcher))
             {
                 matchedEntities.Add(ent);
             }

@@ -25,7 +25,7 @@ public static class SystemMatcher
         }
     }
 
-    public static void NotifySystems(Matcher matcher)
+    public static void NotifySystems()
     {
         // will notify all subscribed systems with all/any matcher
     }

@@ -35,7 +35,7 @@ public class Entity
 
         if (notifySystems)
         {
-            SystemMatcher.NotifySystems(cmp.matcher);
+            SystemMatcher.NotifySystems();
         }
     }
 
@@ -77,14 +77,19 @@ public class Entity
         return false;
     }
 
-    public bool HasMatcher(Matcher matcher)
+    public bool HasMatchers(params Matcher[] matchers)
     {
-        foreach(IComponent cmp in components)
+        int matchedComponents = 0;
+
+        for (int i = 0; i < matchers.Length; i ++)
         {
-            if (cmp.matcher.Equals(matcher))
-                return true;
+            foreach(IComponent cmp in components)
+            {
+                if (cmp.matcher.Equals(matchers[i]))
+                    matchedComponents ++;
+            }
         }
 
-        return false;
+        return matchedComponents == matchers.Length && matchedComponents != 0;
     }
 }
