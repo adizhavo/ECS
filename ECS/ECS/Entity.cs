@@ -11,11 +11,13 @@ public class Entity
 
     public Entity()
     {
+        EntityMatcher.SubscribeEntity(this);
         components = new List<IComponent>();
     }
 
     ~Entity()
     {
+        EntityMatcher.UnsubscribeEntity(this);
         RemoveAllComponent();
         components = null;
     }
