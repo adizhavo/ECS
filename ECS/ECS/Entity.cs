@@ -17,6 +17,7 @@ public class Entity
     ~Entity()
     {
         RemoveAllComponent();
+        components = null;
     }
 
     public void AddComponent(IComponent newCompoent)
