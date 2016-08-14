@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public static class EntityMatcher
 {
-    private static List<Entity> registeredEntities = new List<Entity>();
+    private static List<Entity> subscribedEntities = new List<Entity>();
 
     public delegate void EntityAdded(Entity ent);
     public static event EntityAdded OnEntityRegistered;
@@ -11,9 +11,9 @@ public static class EntityMatcher
     // This will be called autatically by the Entity constructor
     public static void SubscribeEntity(Entity entity)
     {
-        if (!registeredEntities.Contains(entity))
+        if (!subscribedEntities.Contains(entity))
         {
-            registeredEntities.Add(entity);
+            subscribedEntities.Add(entity);
             if (OnEntityRegistered != null) OnEntityRegistered(entity);
         }
         else
@@ -25,9 +25,9 @@ public static class EntityMatcher
     // This will be called autatically by the Entity destructor
     public static void UnsubscribeEntity(Entity entity)
     {
-        if (registeredEntities.Contains(entity))
+        if (subscribedEntities.Contains(entity))
         {
-            registeredEntities.Remove(entity);
+            subscribedEntities.Remove(entity);
         }
     }
 
@@ -35,7 +35,7 @@ public static class EntityMatcher
     {
         List<Entity> matchedEntities = new List<Entity>();
 
-        foreach(Entity ent in registeredEntities)
+        foreach(Entity ent in subscribedEntities)
         {
             if (ent.HasComponent<T>())
             {
@@ -50,7 +50,7 @@ public static class EntityMatcher
     {
         List<Entity> matchedEntities = new List<Entity>();
 
-        foreach(Entity ent in registeredEntities)
+        foreach(Entity ent in subscribedEntities)
         {
             if (ent.HasMatcher(matcher))
             {
