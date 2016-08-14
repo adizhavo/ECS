@@ -77,7 +77,7 @@ public class Entity
         return false;
     }
 
-    public bool HasMatchers(params Matcher[] matchers)
+    public bool HasAllMatchers(params Matcher[] matchers)
     {
         int matchedComponents = 0;
 
@@ -91,5 +91,19 @@ public class Entity
         }
 
         return matchedComponents == matchers.Length && matchedComponents != 0;
+    }
+
+    public bool HasAnyMatcher(params Matcher[] matchers)
+    {
+        for (int i = 0; i < matchers.Length; i ++)
+        {
+            foreach(IComponent cmp in components)
+            {
+                if (cmp.matcher.Equals(matchers[i]))
+                    return true;
+            }
+        }
+
+        return false;
     }
 }
