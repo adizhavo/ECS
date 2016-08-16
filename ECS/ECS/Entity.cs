@@ -111,15 +111,15 @@ public class Entity
         return requestedComponents;
     }
 
-    public List<IComponent> GetComponents<T>() where T : class, IComponent
+    public List<T> GetComponents<T>() where T : class, IComponent
     {
-        List<IComponent> requestedComponents = new List<IComponent>();
+        List<T> requestedComponents = new List<T>();
 
         foreach(IComponent cmp in components)
         {
             if (cmp is T) 
             {
-                requestedComponents.Add(cmp);
+                requestedComponents.Add((T)cmp);
             }
         }
 
@@ -148,7 +148,10 @@ public class Entity
             foreach(IComponent cmp in components)
             {
                 if (cmp.matcher.Equals(matchers[i]))
+                {
                     matchedComponents ++;
+                    break;
+                }
             }
         }
 
