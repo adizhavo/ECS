@@ -1,14 +1,18 @@
-﻿public interface IComponent
+﻿namespace ECS
 {
-    Entity entity {set;get;}
-    Matcher matcher {get;}
-}
+    public interface IComponent
+    {
+        Entity entity { set; get; }
 
-// Add new element when a new component is added
-public enum Matcher
-{
-    // Move
-    // Health
-    // Attack
-    // ecc...
+        Matcher matcher { get; }
+    }
+
+    // Add new element when a new component is added
+    public enum Matcher
+    {
+        // Move,
+        // Health
+        // Attack
+        // ecc...
+    }
 }

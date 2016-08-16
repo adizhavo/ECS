@@ -1,78 +1,83 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public static class EntityMatcher
+namespace ECS
 {
-    private static List<Entity> subscribedEntities = new List<Entity>();
-
-    public delegate void EntityAdded(Entity ent);
-    public static event EntityAdded OnEntityRegistered;
-
-    // This will be called autatically by the Entity constructor
-    public static void SubscribeEntity(Entity entity)
+    public static class EntityMatcher
     {
-        if (!subscribedEntities.Contains(entity))
-        {
-            subscribedEntities.Add(entity);
-            if (OnEntityRegistered != null) OnEntityRegistered(entity);
-        }
-        else
-        {
-            Console.Write("Entity is already registered");
-        }
-    }
+        private static List<Entity> subscribedEntities = new List<Entity>();
 
-    // This will be called autatically by the Entity destructor
-    public static void UnsubscribeEntity(Entity entity)
-    {
-        if (subscribedEntities.Contains(entity))
-        {
-            subscribedEntities.Remove(entity);
-        }
-    }
+        public delegate void EntityAdded(Entity ent);
 
-    public static List<Entity> GetEntitiesWithComponent<T>() where T : class, IComponent
-    {
-        List<Entity> matchedEntities = new List<Entity>();
+        public static event EntityAdded OnEntityRegistered;
 
-        foreach(Entity ent in subscribedEntities)
+        // This will be called autatically by the Entity constructor
+        public static void SubscribeEntity(Entity entity)
         {
-            if (ent.HasComponent<T>())
+            if (!subscribedEntities.Contains(entity))
             {
-                matchedEntities.Add(ent);
+                subscribedEntities.Add(entity);
+                if (OnEntityRegistered != null)
+                    OnEntityRegistered(entity);
+            }
+            else
+            {
+                Console.Write("Entity is already registered");
             }
         }
 
-        return matchedEntities;
-    }
-
-    public static List<Entity> GetEntitiesWithAllMatches(params Matcher[] matchers)
-    {
-        List<Entity> matchedEntities = new List<Entity>();
-
-        foreach(Entity ent in subscribedEntities)
+        // This will be called autatically by the Entity destructor
+        public static void UnsubscribeEntity(Entity entity)
         {
-            if (ent.HasAllMatchers(matchers))
+            if (subscribedEntities.Contains(entity))
             {
-                matchedEntities.Add(ent);
+                subscribedEntities.Remove(entity);
             }
         }
 
-        return matchedEntities;
-    }
-
-    public static List<Entity> GetEntitiesWithAnyMatch(params Matcher[] matchers)
-    {
-        List<Entity> matchedEntities = new List<Entity>();
-
-        foreach(Entity ent in subscribedEntities)
+        public static List<Entity> GetEntitiesWithComponent<T>() where T : class, IComponent
         {
-            if (ent.HasAnyMatcher(matchers))
+            List<Entity> matchedEntities = new List<Entity>();
+
+            foreach (Entity ent in subscribedEntities)
             {
-                matchedEntities.Add(ent);
+                if (ent.HasComponent<T>())
+                {
+                    matchedEntities.Add(ent);
+                }
             }
+
+            return matchedEntities;
         }
 
-        return matchedEntities;
+        public static List<Entity> GetEntitiesWithAllMatches(params Matcher[] matchers)
+        {
+            List<Entity> matchedEntities = new List<Entity>();
+
+            foreach (Entity ent in subscribedEntities)
+            {
+                if (ent.HasAllMatchers(matchers))
+                {
+                    matchedEntities.Add(ent);
+                }
+            }
+
+            return matchedEntities;
+        }
+
+        public static List<Entity> GetEntitiesWithAnyMatch(params Matcher[] matchers)
+        {
+            List<Entity> matchedEntities = new List<Entity>();
+
+            foreach (Entity ent in subscribedEntities)
+            {
+                if (ent.HasAnyMatcher(matchers))
+                {
+                    matchedEntities.Add(ent);
+                }
+            }
+
+            return matchedEntities;
+        }
     }
 }

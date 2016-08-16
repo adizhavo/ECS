@@ -1,39 +1,42 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public static class SystemMatcher
+namespace ECS
 {
-    private static List<IEntitySystem> subscribedSystems = new List<IEntitySystem>();
-
-    public static void SubscribeSystem(IEntitySystem system)
+    public static class SystemMatcher
     {
-        if (!subscribedSystems.Contains(system))
-        {
-            subscribedSystems.Add(system);
-        }
-        else
-        {
-            Console.Write("Entity is already registered");
-        }
-    }
+        private static List<IEntitySystem> subscribedSystems = new List<IEntitySystem>();
 
-    public static void UnsubscribeSystem(IEntitySystem system)
-    {
-        if (subscribedSystems.Contains(system))
+        public static void SubscribeSystem(IEntitySystem system)
         {
-            subscribedSystems.Remove(system);
+            if (!subscribedSystems.Contains(system))
+            {
+                subscribedSystems.Add(system);
+            }
+            else
+            {
+                Console.Write("Entity is already registered");
+            }
         }
-    }
 
-    public static void NotifySystems()
-    {
-        foreach(IEntitySystem systems in subscribedSystems)
+        public static void UnsubscribeSystem(IEntitySystem system)
         {
-            List<Entity> allMatchers = EntityMatcher.GetEntitiesWithAllMatches(systems.systemMatchers);
-            List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(systems.systemMatchers);
+            if (subscribedSystems.Contains(system))
+            {
+                subscribedSystems.Remove(system);
+            }
+        }
 
-            systems.AllMatchers(allMatchers);
-            systems.AnyMatchers(anyMatch);
+        public static void NotifySystems()
+        {
+            foreach (IEntitySystem systems in subscribedSystems)
+            {
+                List<Entity> allMatchers = EntityMatcher.GetEntitiesWithAllMatches(systems.systemMatchers);
+                List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(systems.systemMatchers);
+
+                systems.AllMatchers(allMatchers);
+                systems.AnyMatchers(anyMatch);
+            }
         }
     }
 }

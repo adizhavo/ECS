@@ -1,171 +1,177 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class Entity
+namespace ECS
 {
-    public List<IComponent> components
+    public class Entity
     {
-        private set;
-        get;
-    }
-
-    public Entity()
-    {
-        EntityMatcher.SubscribeEntity(this);
-        components = new List<IComponent>();
-    }
-
-    ~Entity()
-    {
-        EntityMatcher.UnsubscribeEntity(this);
-        RemoveAllComponent();
-        components = null;
-    }
-
-    public void AddComponent(IComponent newComponent, bool notifySystems = true)
-    {
-        if (newComponent == null)
+        public List<IComponent> components
         {
-            Console.Write("Component that you intented to add is null, method will return void");
-            return;
+            private set;
+            get;
         }
 
-        components.Add(newComponent);
-        newComponent.entity = this;
-
-        if (notifySystems)
+        public Entity()
         {
-            SystemMatcher.NotifySystems();
-        }
-    }
-
-    public void ReplaceComponent(IComponent replaceComponent, bool notifySystem = true)
-    {
-        if (replaceComponent == null)
-        {
-            Console.Write("Component that you intented to replace is null, method will return void");
-            return;
+            EntityMatcher.SubscribeEntity(this);
+            components = new List<IComponent>();
         }
 
-        for (int i = 0; i < components.Count; i ++)
+        ~Entity()
         {
-            if (components[i].matcher.Equals(replaceComponent.matcher))
+            EntityMatcher.UnsubscribeEntity(this);
+            RemoveAllComponent();
+            components = null;
+        }
+
+        public void AddComponent(IComponent newComponent, bool notifySystems = true)
+        {
+            if (newComponent == null)
             {
-                components[i].entity = null;
-                components[i] = null;
-                components[i] = replaceComponent;
+                Console.Write("Component that you intented to add is null, method will return void");
                 return;
             }
-        }
 
-        Console.Write("No match for the component, will be added as a new component to the entity");
-        AddComponent(replaceComponent, notifySystem);
-    }
+            components.Add(newComponent);
+            newComponent.entity = this;
 
-    public void RemoveComponent<T>() where T : class, IComponent
-    {
-        foreach (IComponent cmp in components)
-        {
-            if (cmp is T) 
+            if (notifySystems)
             {
-                cmp.entity = null;
-                components.Remove(cmp);
-            }
-        }
-    }
-
-    public void RemoveMatchedComponent(Matcher deleteMatcher)
-    {
-        foreach (IComponent cmp in components)
-        {
-            if (cmp.matcher.Equals(deleteMatcher))
-            {
-                components.Remove(cmp);
-            }
-        }
-    }
-
-    public void RemoveAllComponent()
-    {
-        for (int i= 0; i < components.Count; i ++)
-        {
-            components[i].entity = null;
-            components.RemoveAt(i);
-        }
-
-        components.Clear();
-    }
-
-    public List<IComponent> GetComponentsWithMatcher(Matcher requestMatcher)
-    {
-        List<IComponent> requestedComponents = new List<IComponent>();
-
-        foreach(IComponent cmp in components)
-        {
-            if(cmp.matcher.Equals(requestMatcher))
-            {
-                requestedComponents.Add(cmp);
+                SystemMatcher.NotifySystems();
             }
         }
 
-        return requestedComponents;
-    }
-
-    public List<IComponent> GetComponents<T>() where T : class, IComponent
-    {
-        List<IComponent> requestedComponents = new List<IComponent>();
-
-        foreach(IComponent cmp in components)
+        public void ReplaceComponent(IComponent replaceComponent, bool notifySystem = true)
         {
-            if (cmp is T) 
+            if (replaceComponent == null)
             {
-                requestedComponents.Add(cmp);
+                Console.Write("Component that you intented to replace is null, method will return void");
+                return;
+            }
+
+            for (int i = 0; i < components.Count; i++)
+            {
+                if (components[i].matcher.Equals(replaceComponent.matcher))
+                {
+                    components[i].entity = null;
+                    components[i] = null;
+                    components[i] = replaceComponent;
+                    return;
+                }
+            }
+
+            Console.Write("No match for the component, will be added as a new component to the entity");
+            AddComponent(replaceComponent, notifySystem);
+        }
+
+        public void RemoveComponent<T>() where T : class, IComponent
+        {
+            foreach (IComponent cmp in components)
+            {
+                if (cmp is T)
+                {
+                    cmp.entity = null;
+                    components.Remove(cmp);
+                }
             }
         }
 
-        return requestedComponents;
-    }
-
-    public bool HasComponent<T>() where T : class, IComponent
-    {
-        foreach(IComponent cmp in components)
+        public void RemoveMatchedComponent(Matcher deleteMatcher)
         {
-            if (cmp is T) 
+            foreach (IComponent cmp in components)
             {
-                return true;
+                if (cmp.matcher.Equals(deleteMatcher))
+                {
+                    components.Remove(cmp);
+                }
             }
         }
 
-        return false;
-    }
-
-    public bool HasAllMatchers(params Matcher[] matchers)
-    {
-        int matchedComponents = 0;
-
-        for (int i = 0; i < matchers.Length; i ++)
+        public void RemoveAllComponent()
         {
-            foreach(IComponent cmp in components)
+            for (int i = 0; i < components.Count; i++)
             {
-                if (cmp.matcher.Equals(matchers[i]))
-                    matchedComponents ++;
+                components[i].entity = null;
+                components.RemoveAt(i);
             }
+
+            components.Clear();
         }
 
-        return matchedComponents == matchers.Length && matchedComponents != 0;
-    }
-
-    public bool HasAnyMatcher(params Matcher[] matchers)
-    {
-        for (int i = 0; i < matchers.Length; i ++)
+        public List<IComponent> GetComponentsWithMatcher(Matcher requestMatcher)
         {
-            foreach(IComponent cmp in components)
+            List<IComponent> requestedComponents = new List<IComponent>();
+
+            foreach (IComponent cmp in components)
             {
-                if (cmp.matcher.Equals(matchers[i]))
+                if (cmp.matcher.Equals(requestMatcher))
+                {
+                    requestedComponents.Add(cmp);
+                }
+            }
+
+            return requestedComponents;
+        }
+
+        public List<T> GetComponents<T>() where T : class, IComponent
+        {
+            List<T> requestedComponents = new List<T>();
+
+            foreach (IComponent cmp in components)
+            {
+                if (cmp is T)
+                {
+                    requestedComponents.Add((T)cmp);
+                }
+            }
+
+            return requestedComponents;
+        }
+
+        public bool HasComponent<T>() where T : class, IComponent
+        {
+            foreach (IComponent cmp in components)
+            {
+                if (cmp is T)
+                {
                     return true;
+                }
             }
+
+            return false;
         }
 
-        return false;
+        public bool HasAllMatchers(params Matcher[] matchers)
+        {
+            int matchedComponents = 0;
+
+            for (int i = 0; i < matchers.Length; i++)
+            {
+                foreach (IComponent cmp in components)
+                {
+                    if (cmp.matcher.Equals(matchers[i]))
+                    {
+                        matchedComponents++;
+                        break;
+                    }
+                }
+            }
+
+            return matchedComponents == matchers.Length && matchedComponents != 0;
+        }
+
+        public bool HasAnyMatcher(params Matcher[] matchers)
+        {
+            for (int i = 0; i < matchers.Length; i++)
+            {
+                foreach (IComponent cmp in components)
+                {
+                    if (cmp.matcher.Equals(matchers[i]))
+                        return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
