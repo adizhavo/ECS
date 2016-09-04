@@ -3,15 +3,18 @@ using System.Collections.Generic;
 
 namespace ECS
 {
+	// Will hold all the entities and return a specific pool of them, like a search engine of entities and components
+	// this can be extended in much more methods
     public static class EntityMatcher
     {
+		// All entities created
         private static List<Entity> subscribedEntities = new List<Entity>();
 
         public delegate void EntityAdded(Entity ent);
 
         public static event EntityAdded OnEntityRegistered;
 
-        // This will be called autatically by the Entity constructor
+        // Entity constructor will subriscribe with this method
         public static void SubscribeEntity(Entity entity)
         {
             if (!subscribedEntities.Contains(entity))
@@ -26,7 +29,7 @@ namespace ECS
             }
         }
 
-        // This will be called autatically by the Entity destructor
+		// Entity constructor will unsubriscribe with this method
         public static void UnsubscribeEntity(Entity entity)
         {
             if (subscribedEntities.Contains(entity))
@@ -50,6 +53,7 @@ namespace ECS
             return matchedEntities;
         }
 
+		// Entities must have all specified matchers
         public static List<Entity> GetEntitiesWithAllMatches(params Matcher[] matchers)
         {
             List<Entity> matchedEntities = new List<Entity>();
@@ -65,6 +69,7 @@ namespace ECS
             return matchedEntities;
         }
 
+		// Entities can have at least one of specified matchers
         public static List<Entity> GetEntitiesWithAnyMatch(params Matcher[] matchers)
         {
             List<Entity> matchedEntities = new List<Entity>();

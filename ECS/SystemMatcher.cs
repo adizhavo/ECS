@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace ECS
 {
+	// Will hold all the systems that wants to be notified if a component is added or replaced
     public static class SystemMatcher
     {
         private static List<IEntitySystem> subscribedSystems = new List<IEntitySystem>();
@@ -27,6 +28,7 @@ namespace ECS
             }
         }
 
+		// The entity will call this when a new component is added or replaced
         public static void NotifySystems()
         {
             foreach (IEntitySystem systems in subscribedSystems)

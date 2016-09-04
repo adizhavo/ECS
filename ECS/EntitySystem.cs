@@ -2,6 +2,12 @@
 
 namespace ECS
 {
+	// This class will change into two different interfaces because not every system would like
+	// to perform AllMatcher or AnyMatcher if one of them is not needed
+
+	// Should be also notified for removed components
+
+	// Will perform operations of new component wich are added to an entity
     public interface IEntitySystem
     {
         Matcher[] systemMatchers { get; }
