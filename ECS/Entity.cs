@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace ECS
 {
+	// is the facade for different components, a bag for data and simple operations
     public class Entity
     {
         public List<IComponent> components
@@ -24,6 +25,7 @@ namespace ECS
             components = null;
         }
 
+		// Add new component to the entity, can support doubles of components
         public void AddComponent(IComponent newComponent, bool notifySystems = true)
         {
             if (newComponent == null)
@@ -37,10 +39,12 @@ namespace ECS
 
             if (notifySystems)
             {
+				// Notifies systems so they can perfom operations, like manipulating componet data
                 SystemMatcher.NotifySystems();
             }
         }
 
+		// Will replace component if there is a match, if not it will add it as a new component
         public void ReplaceComponent(IComponent replaceComponent, bool notifySystem = true)
         {
             if (replaceComponent == null)
@@ -76,17 +80,6 @@ namespace ECS
             }
         }
 
-        public void RemoveMatchedComponent(Matcher deleteMatcher)
-        {
-            foreach (IComponent cmp in components)
-            {
-                if (cmp.matcher.Equals(deleteMatcher))
-                {
-                    components.Remove(cmp);
-                }
-            }
-        }
-
         public void RemoveAllComponent()
         {
             for (int i = 0; i < components.Count; i++)
@@ -98,6 +91,35 @@ namespace ECS
             components.Clear();
         }
 
+		public List<T> GetComponents<T>() where T : class, IComponent
+		{
+			List<T> requestedComponents = new List<T>();
+			
+			foreach (IComponent cmp in components)
+			{
+				if (cmp is T)
+				{
+					requestedComponents.Add((T)cmp);
+				}
+			}
+			
+			return requestedComponents;
+		}
+		
+		public bool HasComponent<T>() where T : class, IComponent
+		{
+			foreach (IComponent cmp in components)
+			{
+				if (cmp is T)
+				{
+					return true;
+				}
+			}
+			
+			return false;
+		}
+
+		// Same hierarchy of sublclasses can have different matchers
         public List<IComponent> GetComponentsWithMatcher(Matcher requestMatcher)
         {
             List<IComponent> requestedComponents = new List<IComponent>();
@@ -111,34 +133,6 @@ namespace ECS
             }
 
             return requestedComponents;
-        }
-
-        public List<T> GetComponents<T>() where T : class, IComponent
-        {
-            List<T> requestedComponents = new List<T>();
-
-            foreach (IComponent cmp in components)
-            {
-                if (cmp is T)
-                {
-                    requestedComponents.Add((T)cmp);
-                }
-            }
-
-            return requestedComponents;
-        }
-
-        public bool HasComponent<T>() where T : class, IComponent
-        {
-            foreach (IComponent cmp in components)
-            {
-                if (cmp is T)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public bool HasAllMatchers(params Matcher[] matchers)
@@ -173,5 +167,16 @@ namespace ECS
 
             return false;
         }
+
+		public void RemoveMatchedComponent(Matcher deleteMatcher)
+		{
+			foreach (IComponent cmp in components)
+			{
+				if (cmp.matcher.Equals(deleteMatcher))
+				{
+					components.Remove(cmp);
+				}
+			}
+		}
     }
 }
