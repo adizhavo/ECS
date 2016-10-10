@@ -55,7 +55,7 @@ namespace ECS
 
             for (int i = 0; i < components.Count; i++)
             {
-                if (components[i].matcher.Equals(replaceComponent.matcher))
+                if (components[i].GetType().Equals(replaceComponent.GetType()))
                 {
                     components[i].entity = null;
                     components[i] = null;
@@ -120,13 +120,13 @@ namespace ECS
 		}
 
 		// Same hierarchy of sublclasses can have different matchers
-        public List<IComponent> GetComponentsWithMatcher(Matcher requestMatcher)
+        public List<IComponent> GetComponentsWithType(Type request)
         {
             List<IComponent> requestedComponents = new List<IComponent>();
 
             foreach (IComponent cmp in components)
             {
-                if (cmp.matcher.Equals(requestMatcher))
+                if (cmp.GetType().Equals(request))
                 {
                     requestedComponents.Add(cmp);
                 }
@@ -135,7 +135,7 @@ namespace ECS
             return requestedComponents;
         }
 
-        public bool HasAllMatchers(params Matcher[] matchers)
+        public bool HasAllMatchers(params Type[] matchers)
         {
             int matchedComponents = 0;
 
@@ -143,7 +143,7 @@ namespace ECS
             {
                 foreach (IComponent cmp in components)
                 {
-                    if (cmp.matcher.Equals(matchers[i]))
+                    if (cmp.GetType().Equals(matchers[i]))
                     {
                         matchedComponents++;
                         break;
@@ -154,13 +154,13 @@ namespace ECS
             return matchedComponents == matchers.Length && matchedComponents != 0;
         }
 
-        public bool HasAnyMatcher(params Matcher[] matchers)
+        public bool HasAnyMatcher(params Type[] matchers)
         {
             for (int i = 0; i < matchers.Length; i++)
             {
                 foreach (IComponent cmp in components)
                 {
-                    if (cmp.matcher.Equals(matchers[i]))
+                    if (cmp.GetType().Equals(matchers[i]))
                         return true;
                 }
             }
@@ -168,11 +168,11 @@ namespace ECS
             return false;
         }
 
-		public void RemoveMatchedComponent(Matcher deleteMatcher)
+        public void RemoveComponent(Type type)
 		{
 			foreach (IComponent cmp in components)
 			{
-				if (cmp.matcher.Equals(deleteMatcher))
+                if (cmp.GetType().Equals(type))
 				{
 					components.Remove(cmp);
 				}

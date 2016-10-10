@@ -15,42 +15,35 @@ class MainClass
         ent.AddComponent(healthComp);
         ent.AddComponent(moveComp);
 
-        Console.Write(ent.HasAnyMatcher(Matcher.Health, Matcher.Move));
-        Console.Write(ent.HasAllMatchers(Matcher.Health, Matcher.Move));
+        Entity ent2 = new Entity();
+        ent2.AddComponent(healthComp);
+
+        Console.Write(ent.HasAnyMatcher(typeof(moveComp), typeof(healthComp)));
+        Console.Write(ent.HasAllMatchers(typeof(moveComp), typeof(healthComp)));
     }
 }
 
 public class moveComp : IComponent
 {
     #region IComponent implementation
+
     public Entity entity
     {
         set; get;
     }
-    public Matcher matcher
-    {
-        get
-        {
-            return Matcher.Move;
-        }
-    }
+
     #endregion
 }
 
 public class healthComp : IComponent
 {
     #region IComponent implementation
+
     public Entity entity
     {
         set; get;
     }
-    public Matcher matcher
-    {
-        get
-        {
-            return Matcher.Health;
-        }
-    }
+
     #endregion
 }
 
@@ -59,17 +52,19 @@ public class MoveSystem : IEntitySystem
     #region IEntitySystem implementation
     public void AllMatchers(System.Collections.Generic.List<Entity> entities)
     {
-        Console.Write("All" + entities.Count);
+        Console.Write("All " + entities.Count + " ");
     }
+
     public void AnyMatchers(System.Collections.Generic.List<Entity> entities)
     {
-        Console.Write("Any" + entities.Count);
+        Console.Write("Any " + entities.Count + " ");
     }
-    public Matcher[] systemMatchers
+
+    public Type[] matchers
     {
-        get
+        get 
         {
-            return new Matcher[]{ Matcher.Move, Matcher.Health };
+            return new Type[] {typeof(moveComp), typeof(healthComp)};
         }
     }
     #endregion
