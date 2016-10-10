@@ -18,8 +18,8 @@ class MainClass
         Entity ent2 = new Entity();
         ent2.AddComponent(healthComp);
 
-        Console.Write(ent.HasAnyMatcher(typeof(moveComp), typeof(healthComp)));
-        Console.Write(ent.HasAllMatchers(typeof(moveComp), typeof(healthComp)));
+        Console.Write(ent.HasAnyComponent(typeof(moveComp), typeof(healthComp)));
+        Console.Write(ent.HasAllComponents(typeof(moveComp), typeof(healthComp)));
     }
 }
 

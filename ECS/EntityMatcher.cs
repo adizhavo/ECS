@@ -60,7 +60,7 @@ namespace ECS
 
             foreach (Entity ent in subscribedEntities)
             {
-                if (ent.HasAllMatchers(matchers))
+                if (ent.HasAllComponents(matchers))
                 {
                     matchedEntities.Add(ent);
                 }
@@ -76,7 +76,7 @@ namespace ECS
 
             foreach (Entity ent in subscribedEntities)
             {
-                if (ent.HasAnyMatcher(matchers))
+                if (ent.HasAnyComponent(matchers))
                 {
                     matchedEntities.Add(ent);
                 }
