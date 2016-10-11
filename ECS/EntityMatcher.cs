@@ -5,7 +5,7 @@ namespace ECS
 {
 	// Will hold all the entities and return a specific pool of them, like a search engine of entities and components
 	// this can be extended in much more methods
-    public static class EntityMatcher
+    public static partial class EntityMatcher
     {
 		// All entities created
         private static List<Entity> subscribedEntities = new List<Entity>();
