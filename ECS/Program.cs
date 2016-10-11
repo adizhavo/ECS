@@ -5,8 +5,9 @@ class MainClass
 {
     public static void Main(string[] args)
     {
-        IEntitySystem moveSystem = new SampleSystem();
-        SystemMatcher.SubscribeSystem(moveSystem);
+        SampleSystem allAndAnyMatcherSystem = new SampleSystem();
+        SystemMatcher.SubscribeAllMatcherSystem(allAndAnyMatcherSystem);
+        SystemMatcher.SubscribeAnyMatcherSystem(allAndAnyMatcherSystem);
 
         IComponent moveComp = new moveComp();
         IComponent healthComp = new healthComp();
@@ -44,12 +45,31 @@ public class healthComp : IComponent
     #endregion
 }
 
-public class SampleSystem : IEntitySystem
+public class SampleSystem : IAllMatchersSystem, IAnyMatchersSystem
 {
-    #region IEntitySystem implementation
+    #region IAllMatchersSystem implementation
+    public Type[] allMatchers
+    {
+        get
+        {
+            return new Type[] {typeof(moveComp), typeof(healthComp)};
+        }
+    }
+
     public void AllMatchers(System.Collections.Generic.List<Entity> entities)
     {
         Console.WriteLine(string.Format("{0} received {1} entities with all of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
+    }
+    #endregion
+
+    #region IAnyMatchersSystem implementation
+
+    public Type[] anyMatchers
+    {
+        get
+        {
+            return new Type[] {typeof(moveComp), typeof(healthComp)};
+        }
     }
 
     public void AnyMatchers(System.Collections.Generic.List<Entity> entities)
@@ -57,20 +77,18 @@ public class SampleSystem : IEntitySystem
         Console.WriteLine(string.Format("{0} System received {1} entities with any of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
     }
 
-    public Type[] matchers
-    {
-        get 
-        {
-            return new Type[] {typeof(moveComp), typeof(healthComp)};
-        }
-    }
     #endregion
 
     private string MatcherToString()
     {
         string message = string.Empty;
 
-        foreach(Type t in matchers)
+        foreach(Type t in allMatchers)
+        {
+            message += t.ToString() + " ";
+        }
+
+        foreach(Type t in anyMatchers)
         {
             message += t.ToString() + " ";
         }

@@ -6,13 +6,14 @@ namespace ECS
 	// Will hold all the systems that wants to be notified if a component is added or replaced
     public static class SystemMatcher
     {
-        private static List<IEntitySystem> subscribedSystems = new List<IEntitySystem>();
+        private static List<IAllMatchersSystem> subscribedAllMatcherSystems = new List<IAllMatchersSystem>();
+        private static List<IAnyMatchersSystem> subscribedAnyMatcherSystems = new List<IAnyMatchersSystem>();
 
-        public static void SubscribeSystem(IEntitySystem system)
+        public static void SubscribeAllMatcherSystem(IAllMatchersSystem system)
         {
-            if (!subscribedSystems.Contains(system))
+            if (!subscribedAllMatcherSystems.Contains(system))
             {
-                subscribedSystems.Add(system);
+                subscribedAllMatcherSystems.Add(system);
             }
             else
             {
@@ -20,24 +21,56 @@ namespace ECS
             }
         }
 
-        public static void UnsubscribeSystem(IEntitySystem system)
+        public static void SubscribeAnyMatcherSystem(IAnyMatchersSystem system)
         {
-            if (subscribedSystems.Contains(system))
+            if (!subscribedAnyMatcherSystems.Contains(system))
             {
-                subscribedSystems.Remove(system);
+                subscribedAnyMatcherSystems.Add(system);
+            }
+            else
+            {
+                Console.Write("Entity is already subscribed");
+            }
+        }
+
+        public static void UnsubscribeAllMatcherSystem(IAllMatchersSystem system)
+        {
+            if (subscribedAllMatcherSystems.Contains(system))
+            {
+                subscribedAllMatcherSystems.Remove(system);
+            }
+        }
+
+        public static void UnsubscribeAnyMatcherSystem(IAnyMatchersSystem system)
+        {
+            if (subscribedAnyMatcherSystems.Contains(system))
+            {
+                subscribedAnyMatcherSystems.Remove(system);
             }
         }
 
 		// The entity will call this when a new component is added or replaced
         public static void NotifySystems()
         {
-            foreach (IEntitySystem systems in subscribedSystems)
-            {
-                List<Entity> allMatchers = EntityMatcher.GetEntitiesWithAllMatches(systems.matchers);
-                List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(systems.matchers);
+            NotifyAllMatcherSystem();
+            NotifyAnyMatcherSystem();
+        }
 
-                systems.AllMatchers(allMatchers);
-                systems.AnyMatchers(anyMatch);
+        private static void NotifyAllMatcherSystem()
+        {
+            foreach (IAllMatchersSystem s in subscribedAllMatcherSystems)
+            {
+                List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(s.allMatchers);
+                s.AllMatchers(anyMatch);
+            }
+        }
+
+        private static void NotifyAnyMatcherSystem()
+        {
+            foreach (IAnyMatchersSystem s in subscribedAnyMatcherSystems)
+            {
+                List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(s.anyMatchers);
+                s.AnyMatchers(anyMatch);
             }
         }
     }
