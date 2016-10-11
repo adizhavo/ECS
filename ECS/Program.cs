@@ -5,7 +5,7 @@ class MainClass
 {
     public static void Main(string[] args)
     {
-        IEntitySystem moveSystem = new MoveSystem();
+        IEntitySystem moveSystem = new SampleSystem();
         SystemMatcher.SubscribeSystem(moveSystem);
 
         IComponent moveComp = new moveComp();
@@ -17,9 +17,6 @@ class MainClass
 
         Entity ent2 = new Entity();
         ent2.AddComponent(healthComp);
-
-        Console.Write(ent.HasAnyComponent(typeof(moveComp), typeof(healthComp)));
-        Console.Write(ent.HasAllComponents(typeof(moveComp), typeof(healthComp)));
     }
 }
 
@@ -47,17 +44,17 @@ public class healthComp : IComponent
     #endregion
 }
 
-public class MoveSystem : IEntitySystem
+public class SampleSystem : IEntitySystem
 {
     #region IEntitySystem implementation
     public void AllMatchers(System.Collections.Generic.List<Entity> entities)
     {
-        Console.Write("All " + entities.Count + " ");
+        Console.WriteLine(string.Format("{0} received {1} entities with all of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
     }
 
     public void AnyMatchers(System.Collections.Generic.List<Entity> entities)
     {
-        Console.Write("Any " + entities.Count + " ");
+        Console.WriteLine(string.Format("{0} System received {1} entities with any of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
     }
 
     public Type[] matchers
@@ -68,5 +65,16 @@ public class MoveSystem : IEntitySystem
         }
     }
     #endregion
-    
+
+    private string MatcherToString()
+    {
+        string message = string.Empty;
+
+        foreach(Type t in matchers)
+        {
+            message += t.ToString() + " ";
+        }
+
+        return message;
+    }
 }

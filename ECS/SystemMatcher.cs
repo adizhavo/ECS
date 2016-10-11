@@ -16,7 +16,7 @@ namespace ECS
             }
             else
             {
-                Console.Write("Entity is already registered");
+                Console.Write("Entity is already subscribed");
             }
         }
 
