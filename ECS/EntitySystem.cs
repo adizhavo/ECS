@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ECS
 {
@@ -10,8 +11,7 @@ namespace ECS
 	// Will perform operations of new component wich are added to an entity
     public interface IEntitySystem
     {
-        Matcher[] systemMatchers { get; }
-
+        Type[] matchers { get; }
         // will get entities that have all the matched component
         void AllMatchers(List<Entity> entities);
 

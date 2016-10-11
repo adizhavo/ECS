@@ -25,7 +25,7 @@ namespace ECS
             }
             else
             {
-                Console.Write("Entity is already registered");
+                Console.Write("Entity is already subscribed");
             }
         }
 
@@ -54,13 +54,13 @@ namespace ECS
         }
 
 		// Entities must have all specified matchers
-        public static List<Entity> GetEntitiesWithAllMatches(params Matcher[] matchers)
+        public static List<Entity> GetEntitiesWithAllMatches(params Type[] matchers)
         {
             List<Entity> matchedEntities = new List<Entity>();
 
             foreach (Entity ent in subscribedEntities)
             {
-                if (ent.HasAllMatchers(matchers))
+                if (ent.HasAllComponents(matchers))
                 {
                     matchedEntities.Add(ent);
                 }
@@ -70,13 +70,13 @@ namespace ECS
         }
 
 		// Entities can have at least one of specified matchers
-        public static List<Entity> GetEntitiesWithAnyMatch(params Matcher[] matchers)
+        public static List<Entity> GetEntitiesWithAnyMatch(params Type[] matchers)
         {
             List<Entity> matchedEntities = new List<Entity>();
 
             foreach (Entity ent in subscribedEntities)
             {
-                if (ent.HasAnyMatcher(matchers))
+                if (ent.HasAnyComponent(matchers))
                 {
                     matchedEntities.Add(ent);
                 }

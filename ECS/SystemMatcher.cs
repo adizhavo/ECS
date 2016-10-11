@@ -16,7 +16,7 @@ namespace ECS
             }
             else
             {
-                Console.Write("Entity is already registered");
+                Console.Write("Entity is already subscribed");
             }
         }
 
@@ -33,8 +33,8 @@ namespace ECS
         {
             foreach (IEntitySystem systems in subscribedSystems)
             {
-                List<Entity> allMatchers = EntityMatcher.GetEntitiesWithAllMatches(systems.systemMatchers);
-                List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(systems.systemMatchers);
+                List<Entity> allMatchers = EntityMatcher.GetEntitiesWithAllMatches(systems.matchers);
+                List<Entity> anyMatch = EntityMatcher.GetEntitiesWithAnyMatch(systems.matchers);
 
                 systems.AllMatchers(allMatchers);
                 systems.AnyMatchers(anyMatch);

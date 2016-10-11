@@ -5,7 +5,7 @@ class MainClass
 {
     public static void Main(string[] args)
     {
-        IEntitySystem moveSystem = new MoveSystem();
+        IEntitySystem moveSystem = new SampleSystem();
         SystemMatcher.SubscribeSystem(moveSystem);
 
         IComponent moveComp = new moveComp();
@@ -15,63 +15,66 @@ class MainClass
         ent.AddComponent(healthComp);
         ent.AddComponent(moveComp);
 
-        Console.Write(ent.HasAnyMatcher(Matcher.Health, Matcher.Move));
-        Console.Write(ent.HasAllMatchers(Matcher.Health, Matcher.Move));
+        Entity ent2 = new Entity();
+        ent2.AddComponent(healthComp);
     }
 }
 
 public class moveComp : IComponent
 {
     #region IComponent implementation
+
     public Entity entity
     {
         set; get;
     }
-    public Matcher matcher
-    {
-        get
-        {
-            return Matcher.Move;
-        }
-    }
+
     #endregion
 }
 
 public class healthComp : IComponent
 {
     #region IComponent implementation
+
     public Entity entity
     {
         set; get;
     }
-    public Matcher matcher
-    {
-        get
-        {
-            return Matcher.Health;
-        }
-    }
+
     #endregion
 }
 
-public class MoveSystem : IEntitySystem
+public class SampleSystem : IEntitySystem
 {
     #region IEntitySystem implementation
     public void AllMatchers(System.Collections.Generic.List<Entity> entities)
     {
-        Console.Write("All" + entities.Count);
+        Console.WriteLine(string.Format("{0} received {1} entities with all of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
     }
+
     public void AnyMatchers(System.Collections.Generic.List<Entity> entities)
     {
-        Console.Write("Any" + entities.Count);
+        Console.WriteLine(string.Format("{0} System received {1} entities with any of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
     }
-    public Matcher[] systemMatchers
+
+    public Type[] matchers
     {
-        get
+        get 
         {
-            return new Matcher[]{ Matcher.Move, Matcher.Health };
+            return new Type[] {typeof(moveComp), typeof(healthComp)};
         }
     }
     #endregion
-    
+
+    private string MatcherToString()
+    {
+        string message = string.Empty;
+
+        foreach(Type t in matchers)
+        {
+            message += t.ToString() + " ";
+        }
+
+        return message;
+    }
 }
