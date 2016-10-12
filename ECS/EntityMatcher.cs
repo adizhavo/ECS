@@ -23,7 +23,7 @@ namespace ECS
                 if (OnEntityRegistered != null)
                     OnEntityRegistered(entity);
             }
-            else Console.Write("Entity is already subscribed");
+            else Console.WriteLine("Entity is already subscribed");
         }
 
 		// Entity constructor will unsubriscribe with this method
@@ -34,35 +34,35 @@ namespace ECS
 
         public static bool MatchWithFilter(Filter request, Entity ent)
         {
-            return ent.HasAllComponents(request.AllType.ToArray()) && ent.HasAnyComponent(request.AnyType.ToArray());
+            return ent.HasAllComponents(request.AllType.ToArray()) 
+                   && ent.HasAnyComponent(request.AnyType.ToArray()) 
+                   && !ent.HasAnyComponent(request.NoneType.ToArray());
         }
 
         public static HashSet<Entity> FilterEntities(Filter request)
         {
-            return FilterWithAnyComponent(request, 
-                        FilterWithAllComponents(request, 
+            return IncludeEntities(request, 
+                        ExcludeEntities(request, 
                             subscribedEntities
                         )
                     );
         }
 
-        // Entities must have all specified matchers
-        private static HashSet<Entity> FilterWithAllComponents(Filter request, HashSet<Entity> pool)
+        private static HashSet<Entity> IncludeEntities(Filter request, HashSet<Entity> pool)
         {
             HashSet<Entity> result = new HashSet<Entity>();
             foreach(Entity ent in pool)
-                if (ent.HasAllComponents(request.AllType.ToArray()))
+                if (ent.HasAnyComponent(request.AnyType.ToArray()) && ent.HasAllComponents(request.AllType.ToArray()))
                     result.Add(ent);
 
             return result;
         }
 
-        // Entities can have at least one of specified matchers
-        private static HashSet<Entity> FilterWithAnyComponent(Filter request, HashSet<Entity> pool)
+        private static HashSet<Entity> ExcludeEntities(Filter request, HashSet<Entity> pool)
         {
             HashSet<Entity> result = new HashSet<Entity>();
             foreach(Entity ent in pool)
-                if (ent.HasAnyComponent(request.AnyType.ToArray()))
+                if (!ent.HasAnyComponent(request.NoneType.ToArray()))
                     result.Add(ent);
 
             return result;

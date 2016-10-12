@@ -1,78 +1,87 @@
-﻿using System;
-using ECS;
+﻿using ECS;
+using System;
 
 class MainClass
 {
     public static void Main(string[] args)
     {
-        IReactiveSystem reactiveSystem = new SampleSystem();
-        SystemObserver.Subscribe(reactiveSystem);
+        IReactiveSystem sampleReactiveSystem = new SampleSystem();
+        SystemObserver.Subscribe(sampleReactiveSystem);
 
-        IComponent moveComp = new moveComp();
-        IComponent healthComp = new healthComp();
+        IComponent moveComp = new MoveComp();
+        IComponent healthComp = new HealthComp();
 
         Entity ent = new Entity();
-        ent.AddComponent(healthComp);
         ent.AddComponent(moveComp);
+        ent.AddComponent(healthComp);
 
         Entity ent2 = new Entity();
         ent2.AddComponent(healthComp);
     }
 }
 
-public class moveComp : IComponent
+namespace ECS
 {
-    #region IComponent implementation
-
-    public Entity entity
+    public class MoveComp : IComponent
     {
-        set; get;
-    }
+        #region IComponent implementation
 
-    #endregion
-}
-
-public class healthComp : IComponent
-{
-    #region IComponent implementation
-
-    public Entity entity
-    {
-        set; get;
-    }
-
-    #endregion
-}
-
-public class SampleSystem : IReactiveSystem
-{
-    private Filter match = new Filter().AllOf(typeof(moveComp), typeof(healthComp)).AnyOf(typeof(healthComp));
-    #region IReactiveSystem implementation
-    public Filter filterMatch { get { return match; } }
-
-    public void Execute(Entity entity)
-    {
-        Console.WriteLine(string.Format("{0} received {1}, the system has a filter with: {2}", this.GetType(), entity.GetType(), MatcherToString()));
-    }
-    #endregion
-
-    private string MatcherToString()
-    {
-        string message = string.Empty;
-
-        message += "Any of these components: ";
-        foreach(Type t in filterMatch.AnyType)
+        public Entity entity
         {
-            message += t.ToString() + " ";
+            set; get;
         }
 
-        message += ", All of these components: ";
-        foreach(Type t in filterMatch.AllType)
-        {
-            message += t.ToString() + " ";
-        }
-
-        return message;
+        #endregion
     }
 
+    public class HealthComp : IComponent
+    {
+        #region IComponent implementation
+
+        public Entity entity
+        {
+            set; get;
+        }
+
+        #endregion
+    }
+
+    public class SampleSystem : IReactiveSystem
+    {
+        private Filter match = new Filter().AnyOf(typeof(HealthComp)).NoneOf(typeof(MoveComp));
+
+        #region IReactiveSystem implementation
+        public Filter filterMatch { get { return match; } }
+
+        public void Execute(Entity entity)
+        {
+            Console.WriteLine(string.Format("{0} received {1}, the system has a filter with: {2}", this.GetType(), entity.GetType(), MatcherToString()));
+        }
+        #endregion
+
+        private string MatcherToString()
+        {
+            string message = string.Empty;
+
+            message += "Any of these components: ";
+            foreach(Type t in filterMatch.AnyType)
+            {
+                message += t.ToString() + " ";
+            }
+
+            message += ", All of these components: ";
+            foreach(Type t in filterMatch.AllType)
+            {
+                message += t.ToString() + " ";
+            }
+
+            message += ", None of these components: ";
+            foreach(Type t in filterMatch.NoneType)
+            {
+                message += t.ToString() + " ";
+            }
+
+            return message;
+        }
+    }
 }

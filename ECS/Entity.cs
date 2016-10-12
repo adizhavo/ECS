@@ -6,11 +6,7 @@ namespace ECS
 	// is the facade for different components, a bag for data and simple operations
     public class Entity
     {
-        public List<IComponent> components
-        {
-            private set;
-            get;
-        }
+        public readonly List<IComponent> components;
 
         public Entity()
         {
@@ -22,7 +18,6 @@ namespace ECS
         {
             EntityMatcher.UnsubscribeEntity(this);
             RemoveAllComponent();
-            components = null;
         }
 
 		// Add new component to the entity, can support doubles of components
@@ -30,7 +25,7 @@ namespace ECS
         {
             if (newComponent == null)
             {
-                Console.Write("Component that you intented to add is null, method will return void");
+                Console.WriteLine("Component that you intented to add is null, method will return void");
                 return;
             }
 
@@ -46,7 +41,7 @@ namespace ECS
         {
             if (replaceComponent == null)
             {
-                Console.Write("Component that you intented to replace is null, method will return void");
+                Console.WriteLine("Component that you intented to replace is null, method will return void");
                 return;
             }
 
@@ -62,7 +57,7 @@ namespace ECS
                     return;
                 }
 
-            Console.Write("No match for the component, will be added as a new component to the entity");
+            Console.WriteLine("No match for the component, will be added as a new component to the entity");
             AddComponent(replaceComponent, notifySystems);
         }
 
@@ -112,11 +107,12 @@ namespace ECS
 
         public void RemoveComponent<T>() where T : class, IComponent
         {
-            foreach (IComponent cmp in components)
-                if (cmp is T)
+			for(int i = 0; i < components.Count; i ++)
+				if (components[i] is T)
                 {
-                    cmp.entity = null;
-                    components.Remove(cmp);
+					components[i].entity = null;
+                    components.RemoveAt(i);
+					i --;
                 }
         }
 
