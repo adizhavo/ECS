@@ -11,6 +11,8 @@ namespace ECS
 
         public Filter AnyOf(params Type[] includeAnyType)
         {
+            if (includeAnyType == null) return this;
+
             foreach(Type t in includeAnyType)
                 if (!AnyType.Contains(t))
                     AnyType.Add(t);
@@ -20,6 +22,8 @@ namespace ECS
 
         public Filter AllOf(params Type[] includeAllType)
         {
+            if (includeAllType == null) return this;
+
             foreach(Type t in includeAllType)
                 if (!AllType.Contains(t))
                     AllType.Add(t);
@@ -29,6 +33,8 @@ namespace ECS
 
         public Filter NoneOf(params Type[] excludeType)
         {
+            if (excludeType == null) return this;
+
             foreach(Type t in excludeType)
                 if (!NoneType.Contains(t))
                     NoneType.Add(t);
