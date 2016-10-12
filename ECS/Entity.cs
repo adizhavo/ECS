@@ -40,7 +40,7 @@ namespace ECS
             if (notifySystems)
             {
 				// Notifies systems so they can perfom operations, like manipulating componet data
-                SystemMatcher.NotifySystems();
+                SystemMatcher.NotifySystems(this);
             }
         }
 
@@ -99,7 +99,7 @@ namespace ECS
                 }
             }
 
-            return matchedComponents == matchers.Length && matchedComponents != 0;
+            return matchers.Length == 0 || (matchedComponents == matchers.Length && matchedComponents != 0);
         }
 
         public bool HasAnyComponent(params Type[] matchers)
@@ -113,7 +113,7 @@ namespace ECS
                 }
             }
 
-            return false;
+            return matchers.Length == 0;
         }
 
         public bool HasComponent<T>() where T : class, IComponent

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace ECS
@@ -8,10 +9,9 @@ namespace ECS
     public static partial class EntityMatcher
     {
 		// All entities created
-        private static List<Entity> subscribedEntities = new List<Entity>();
+        public readonly static HashSet<Entity> subscribedEntities = new HashSet<Entity>();
 
         public delegate void EntityAdded(Entity ent);
-
         public static event EntityAdded OnEntityRegistered;
 
         // Entity constructor will subriscribe with this method
@@ -23,66 +23,49 @@ namespace ECS
                 if (OnEntityRegistered != null)
                     OnEntityRegistered(entity);
             }
-            else
-            {
-                Console.Write("Entity is already subscribed");
-            }
+            else Console.Write("Entity is already subscribed");
         }
 
 		// Entity constructor will unsubriscribe with this method
         public static void UnsubscribeEntity(Entity entity)
         {
-            if (subscribedEntities.Contains(entity))
-            {
-                subscribedEntities.Remove(entity);
-            }
+            if (subscribedEntities.Contains(entity)) subscribedEntities.Remove(entity);
         }
 
-        public static List<Entity> GetEntitiesWithComponent<T>() where T : class, IComponent
+        public static bool MatchWithFilter(Filter request, Entity ent)
         {
-            List<Entity> matchedEntities = new List<Entity>();
-
-            foreach (Entity ent in subscribedEntities)
-            {
-                if (ent.HasComponent<T>())
-                {
-                    matchedEntities.Add(ent);
-                }
-            }
-
-            return matchedEntities;
+            return ent.HasAllComponents(request.AllType.ToArray()) && ent.HasAnyComponent(request.AnyType.ToArray());
         }
 
-		// Entities must have all specified matchers
-        public static List<Entity> GetEntitiesWithAllMatches(params Type[] matchers)
+        public static HashSet<Entity> FilterEntities(Filter request)
         {
-            List<Entity> matchedEntities = new List<Entity>();
-
-            foreach (Entity ent in subscribedEntities)
-            {
-                if (ent.HasAllComponents(matchers))
-                {
-                    matchedEntities.Add(ent);
-                }
-            }
-
-            return matchedEntities;
+            return FilterWithAnyComponent(request, 
+                        FilterWithAllComponents(request, 
+                            subscribedEntities
+                        )
+                    );
         }
 
-		// Entities can have at least one of specified matchers
-        public static List<Entity> GetEntitiesWithAnyMatch(params Type[] matchers)
+        // Entities must have all specified matchers
+        private static HashSet<Entity> FilterWithAllComponents(Filter request, HashSet<Entity> pool)
         {
-            List<Entity> matchedEntities = new List<Entity>();
+            HashSet<Entity> result = new HashSet<Entity>();
+            foreach(Entity ent in pool)
+                if (ent.HasAllComponents(request.AllType.ToArray()))
+                    result.Add(ent);
 
-            foreach (Entity ent in subscribedEntities)
-            {
-                if (ent.HasAnyComponent(matchers))
-                {
-                    matchedEntities.Add(ent);
-                }
-            }
+            return result;
+        }
 
-            return matchedEntities;
+        // Entities can have at least one of specified matchers
+        private static HashSet<Entity> FilterWithAnyComponent(Filter request, HashSet<Entity> pool)
+        {
+            HashSet<Entity> result = new HashSet<Entity>();
+            foreach(Entity ent in pool)
+                if (ent.HasAnyComponent(request.AnyType.ToArray()))
+                    result.Add(ent);
+
+            return result;
         }
     }
 }

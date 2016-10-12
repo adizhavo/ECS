@@ -5,9 +5,8 @@ class MainClass
 {
     public static void Main(string[] args)
     {
-        SampleSystem allAndAnyMatcherSystem = new SampleSystem();
-        SystemMatcher.SubscribeAllMatcherSystem(allAndAnyMatcherSystem);
-        SystemMatcher.SubscribeAnyMatcherSystem(allAndAnyMatcherSystem);
+        IReactiveSystem reactiveSystem = new SampleSystem();
+        SystemMatcher.Subscribe(reactiveSystem);
 
         IComponent moveComp = new moveComp();
         IComponent healthComp = new healthComp();
@@ -45,54 +44,35 @@ public class healthComp : IComponent
     #endregion
 }
 
-public class SampleSystem : IAllMatchersSystem, IAnyMatchersSystem
+public class SampleSystem : IReactiveSystem
 {
-    #region IAllMatchersSystem implementation
-    public Type[] allMatchers
+    private Filter match = new Filter().AllOf(typeof(moveComp), typeof(healthComp)).AnyOf(typeof(healthComp));
+    #region IReactiveSystem implementation
+    public Filter filterMatch { get { return match; } }
+
+    public void Execute(Entity entity)
     {
-        get
-        {
-            return new Type[] {typeof(moveComp), typeof(healthComp)};
-        }
+        Console.WriteLine(string.Format("{0} received {1}, the system has a filter with: {2}", this.GetType(), entity.GetType(), MatcherToString()));
     }
-
-    public void AllMatchers(System.Collections.Generic.List<Entity> entities)
-    {
-        Console.WriteLine(string.Format("{0} received {1} entities with all of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
-    }
-    #endregion
-
-    #region IAnyMatchersSystem implementation
-
-    public Type[] anyMatchers
-    {
-        get
-        {
-            return new Type[] {typeof(moveComp), typeof(healthComp)};
-        }
-    }
-
-    public void AnyMatchers(System.Collections.Generic.List<Entity> entities)
-    {
-        Console.WriteLine(string.Format("{0} System received {1} entities with any of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
-    }
-
     #endregion
 
     private string MatcherToString()
     {
         string message = string.Empty;
 
-        foreach(Type t in allMatchers)
+        message += "Any of these components: ";
+        foreach(Type t in filterMatch.AnyType)
         {
             message += t.ToString() + " ";
         }
 
-        foreach(Type t in anyMatchers)
+        message += ", All of these components: ";
+        foreach(Type t in filterMatch.AllType)
         {
             message += t.ToString() + " ";
         }
 
         return message;
     }
+
 }
