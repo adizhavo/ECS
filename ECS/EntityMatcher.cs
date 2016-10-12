@@ -23,7 +23,7 @@ namespace ECS
                 if (OnEntityRegistered != null)
                     OnEntityRegistered(entity);
             }
-            else Console.Write("Entity is already subscribed");
+            else Console.WriteLine("Entity is already subscribed");
         }
 
 		// Entity constructor will unsubriscribe with this method

@@ -6,11 +6,7 @@ namespace ECS
 	// is the facade for different components, a bag for data and simple operations
     public class Entity
     {
-        public List<IComponent> components
-        {
-            private set;
-            get;
-        }
+        public readonly List<IComponent> components;
 
         public Entity()
         {
@@ -30,7 +26,7 @@ namespace ECS
         {
             if (newComponent == null)
             {
-                Console.Write("Component that you intented to add is null, method will return void");
+                Console.WriteLine("Component that you intented to add is null, method will return void");
                 return;
             }
 
@@ -46,7 +42,7 @@ namespace ECS
         {
             if (replaceComponent == null)
             {
-                Console.Write("Component that you intented to replace is null, method will return void");
+                Console.WriteLine("Component that you intented to replace is null, method will return void");
                 return;
             }
 
@@ -62,7 +58,7 @@ namespace ECS
                     return;
                 }
 
-            Console.Write("No match for the component, will be added as a new component to the entity");
+            Console.WriteLine("No match for the component, will be added as a new component to the entity");
             AddComponent(replaceComponent, notifySystems);
         }
 
