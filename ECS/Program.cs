@@ -6,7 +6,7 @@ class MainClass
     public static void Main(string[] args)
     {
         IReactiveSystem reactiveSystem = new SampleSystem();
-        SystemMatcher.Subscribe(reactiveSystem);
+        SystemObserver.Subscribe(reactiveSystem);
 
         IComponent moveComp = new moveComp();
         IComponent healthComp = new healthComp();

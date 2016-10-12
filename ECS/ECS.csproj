@@ -38,9 +38,9 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Component.cs" />
     <Compile Include="EntityMatcher.cs" />
-    <Compile Include="SystemMatcher.cs" />
     <Compile Include="EntitySystem.cs" />
     <Compile Include="Filter.cs" />
+    <Compile Include="SystemObserver.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

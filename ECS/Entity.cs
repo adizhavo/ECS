@@ -38,7 +38,7 @@ namespace ECS
             newComponent.entity = this;
 
             // Notifies systems so they can perfom operations, like manipulating componet data
-            if (notifySystems) SystemMatcher.NotifySystems(this);
+            if (notifySystems) SystemObserver.NotifySystems(this);
         }
 
 		// Will replace component if there is a match, if not it will add it as a new component
@@ -58,7 +58,7 @@ namespace ECS
                     components[i] = replaceComponent;
 
                     // Notifies systems so they can perfom operations, like manipulating componet data
-                    if (notifySystems) SystemMatcher.NotifySystems(this);
+                    if (notifySystems) SystemObserver.NotifySystems(this);
                     return;
                 }
 

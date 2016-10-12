@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace ECS
 {
 	// Will hold all the systems that wants to be notified if a component is added or replaced
-    public static class SystemMatcher
+    public static class SystemObserver
     {
         public readonly static HashSet<IReactiveSystem> reactiveSystems = new HashSet<IReactiveSystem>();
 
