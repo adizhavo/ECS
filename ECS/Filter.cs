@@ -9,27 +9,27 @@ namespace ECS
         public HashSet<Type> AllType = new HashSet<Type>();
         public HashSet<Type> NoneType = new HashSet<Type>();
 
-        public Filter AnyOf(params Type[] anyType)
+        public Filter AnyOf(params Type[] includeAnyType)
         {
-            foreach(Type t in anyType)
+            foreach(Type t in includeAnyType)
                 if (!AnyType.Contains(t))
                     AnyType.Add(t);
 
             return this;
         }
 
-        public Filter AllOf(params Type[] allType)
+        public Filter AllOf(params Type[] includeAllType)
         {
-            foreach(Type t in allType)
+            foreach(Type t in includeAllType)
                 if (!AllType.Contains(t))
                     AllType.Add(t);
 
             return this;
         }
 
-        public Filter NoneOf(params Type[] noneType)
+        public Filter NoneOf(params Type[] excludeType)
         {
-            foreach(Type t in noneType)
+            foreach(Type t in excludeType)
                 if (!NoneType.Contains(t))
                     NoneType.Add(t);
 
