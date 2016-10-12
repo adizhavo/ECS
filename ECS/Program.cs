@@ -5,8 +5,8 @@ class MainClass
 {
     public static void Main(string[] args)
     {
-        IEntitySystem moveSystem = new SampleSystem();
-        SystemMatcher.SubscribeSystem(moveSystem);
+        IReactiveSystem reactiveSystem = new SampleSystem();
+        SystemObserver.Subscribe(reactiveSystem);
 
         IComponent moveComp = new moveComp();
         IComponent healthComp = new healthComp();
@@ -44,25 +44,15 @@ public class healthComp : IComponent
     #endregion
 }
 
-public class SampleSystem : IEntitySystem
+public class SampleSystem : IReactiveSystem
 {
-    #region IEntitySystem implementation
-    public void AllMatchers(System.Collections.Generic.List<Entity> entities)
-    {
-        Console.WriteLine(string.Format("{0} received {1} entities with all of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
-    }
+    private Filter match = new Filter().AllOf(typeof(moveComp), typeof(healthComp)).AnyOf(typeof(healthComp));
+    #region IReactiveSystem implementation
+    public Filter filterMatch { get { return match; } }
 
-    public void AnyMatchers(System.Collections.Generic.List<Entity> entities)
+    public void Execute(Entity entity)
     {
-        Console.WriteLine(string.Format("{0} System received {1} entities with any of these components : {2}", this.GetType(), entities.Count, MatcherToString()));
-    }
-
-    public Type[] matchers
-    {
-        get 
-        {
-            return new Type[] {typeof(moveComp), typeof(healthComp)};
-        }
+        Console.WriteLine(string.Format("{0} received {1}, the system has a filter with: {2}", this.GetType(), entity.GetType(), MatcherToString()));
     }
     #endregion
 
@@ -70,11 +60,19 @@ public class SampleSystem : IEntitySystem
     {
         string message = string.Empty;
 
-        foreach(Type t in matchers)
+        message += "Any of these components: ";
+        foreach(Type t in filterMatch.AnyType)
+        {
+            message += t.ToString() + " ";
+        }
+
+        message += ", All of these components: ";
+        foreach(Type t in filterMatch.AllType)
         {
             message += t.ToString() + " ";
         }
 
         return message;
     }
+
 }
