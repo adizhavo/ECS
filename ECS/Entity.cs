@@ -18,7 +18,6 @@ namespace ECS
         {
             EntityMatcher.UnsubscribeEntity(this);
             RemoveAllComponent();
-            components = null;
         }
 
 		// Add new component to the entity, can support doubles of components
@@ -108,11 +107,12 @@ namespace ECS
 
         public void RemoveComponent<T>() where T : class, IComponent
         {
-            foreach (IComponent cmp in components)
-                if (cmp is T)
+			for(int i = 0; i < components.Count; i ++)
+				if (components[i] is T)
                 {
-                    cmp.entity = null;
-                    components.Remove(cmp);
+					components[i].entity = null;
+                    components.RemoveAt(i);
+					i --;
                 }
         }
 
