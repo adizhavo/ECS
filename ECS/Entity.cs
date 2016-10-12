@@ -42,7 +42,7 @@ namespace ECS
         }
 
 		// Will replace component if there is a match, if not it will add it as a new component
-        public void ReplaceComponent(IComponent replaceComponent, bool notifySystem = true)
+        public void ReplaceComponent(IComponent replaceComponent, bool notifySystems = true)
         {
             if (replaceComponent == null)
             {
@@ -56,11 +56,14 @@ namespace ECS
                     components[i].entity = null;
                     components[i] = null;
                     components[i] = replaceComponent;
+
+                    // Notifies systems so they can perfom operations, like manipulating componet data
+                    if (notifySystems) SystemMatcher.NotifySystems(this);
                     return;
                 }
 
             Console.Write("No match for the component, will be added as a new component to the entity");
-            AddComponent(replaceComponent, notifySystem);
+            AddComponent(replaceComponent, notifySystems);
         }
 
 		public List<T> GetComponents<T>() where T : class, IComponent
