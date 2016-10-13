@@ -35,37 +35,22 @@ namespace ECS
             if (subscribedEntities.Contains(entity)) subscribedEntities.Remove(entity);
         }
 
-        public static bool MatchWithFilter(Filter request, Entity ent)
+        public static bool MatchEntityWithFilter(Filter request, Entity ent)
         {
+			if (request == null || ent == null) throw new ArgumentNullException ();
+
             return ent.HasAllComponents(request.AllType.ToArray()) 
                    && ent.HasAnyComponent(request.AnyType.ToArray()) 
                    && ent.HasNoneComponent(request.NoneType.ToArray());
         }
 
-        public static HashSet<Entity> FilterEntities(Filter request)
+        public static HashSet<Entity> GetMatchedEntities(Filter request)
         {
-            return IncludeEntities(request, 
-                        ExcludeEntities(request, 
-                            subscribedEntities
-                        )
-                    );
-        }
+			if (request == null) throw new ArgumentNullException ();
 
-        private static HashSet<Entity> IncludeEntities(Filter request, HashSet<Entity> pool)
-        {
             HashSet<Entity> result = new HashSet<Entity>();
-            foreach(Entity ent in pool)
-                if (ent.HasAnyComponent(request.AnyType.ToArray()) && ent.HasAllComponents(request.AllType.ToArray()))
-                    result.Add(ent);
-
-            return result;
-        }
-
-        private static HashSet<Entity> ExcludeEntities(Filter request, HashSet<Entity> pool)
-        {
-            HashSet<Entity> result = new HashSet<Entity>();
-            foreach(Entity ent in pool)
-                if (!ent.HasAnyComponent(request.NoneType.ToArray()))
+            foreach(Entity ent in subscribedEntities)
+                if (ent.HasAnyComponent(request.AnyType.ToArray()) && ent.HasAllComponents(request.AllType.ToArray()) && ent.HasNoneComponent(request.NoneType.ToArray()))
                     result.Add(ent);
 
             return result;

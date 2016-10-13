@@ -39,6 +39,7 @@
     <Compile Include="EntityTests.cs" />
     <Compile Include="FilterTests.cs" />
     <Compile Include="EntityMatcherTests.cs" />
+    <Compile Include="SystemObserverTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
