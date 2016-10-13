@@ -27,7 +27,7 @@ namespace ECS
         {
             foreach(IReactiveSystem rs in reactiveSystems)
             {
-                bool doesMatch = EntityMatcher.MatchWithFilter(rs.filterMatch, modifiedEntity);
+                bool doesMatch = EntityMatcher.MatchEntityWithFilter(rs.filterMatch, modifiedEntity);
                 if (doesMatch) rs.Execute(modifiedEntity);
             }
         }
