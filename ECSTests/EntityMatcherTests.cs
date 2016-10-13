@@ -58,8 +58,8 @@ namespace ECSTests
 		[ExpectedException]
 		public void ThrowExceptionWhenPassNullFilterOrNullEntity()
 		{
-			EntityMatcher.MatchWithFilter(null, testEntity);
-			EntityMatcher.MatchWithFilter(testFilter, null);
+			EntityMatcher.MatchEntityWithFilter(null, testEntity);
+			EntityMatcher.MatchEntityWithFilter(testFilter, null);
 		}
 
 		[Test()]
@@ -69,7 +69,7 @@ namespace ECSTests
 			testEntity.AddComponent(new SecondTestComponent());
 
 			testFilter.AllOf(typeof(FirstTestComponent), typeof(SecondTestComponent));
-			Assert.IsTrue(EntityMatcher.MatchWithFilter(testFilter, testEntity));
+			Assert.IsTrue(EntityMatcher.MatchEntityWithFilter(testFilter, testEntity));
 		}
 
 		[Test()]
@@ -79,12 +79,12 @@ namespace ECSTests
 			testEntity.AddComponent(new SecondTestComponent());
 			
 			testFilter.AnyOf(typeof(FirstTestComponent));
-			Assert.IsTrue(EntityMatcher.MatchWithFilter(testFilter, testEntity));
+			Assert.IsTrue(EntityMatcher.MatchEntityWithFilter(testFilter, testEntity));
 
 			testFilter.Reset ();
 
 			testFilter.AnyOf(typeof(SecondTestComponent));
-			Assert.IsTrue(EntityMatcher.MatchWithFilter(testFilter, testEntity));
+			Assert.IsTrue(EntityMatcher.MatchEntityWithFilter(testFilter, testEntity));
 		}
 
 		[Test()]
@@ -94,23 +94,23 @@ namespace ECSTests
 			testEntity.AddComponent(new SecondTestComponent());
 			
 			testFilter.NoneOf(typeof(FirstTestComponent));
-			Assert.IsFalse(EntityMatcher.MatchWithFilter(testFilter, testEntity));
+			Assert.IsFalse(EntityMatcher.MatchEntityWithFilter(testFilter, testEntity));
 			
 			testFilter.Reset();
 			
 			testFilter.NoneOf(typeof(SecondTestComponent));
-			Assert.IsFalse(EntityMatcher.MatchWithFilter(testFilter, testEntity));
+			Assert.IsFalse(EntityMatcher.MatchEntityWithFilter(testFilter, testEntity));
 
 			testFilter.Reset();
 			testEntity.RemoveAllComponent();
 			testFilter.NoneOf(typeof(FirstTestComponent), typeof(SecondTestComponent));
-			Assert.IsTrue(EntityMatcher.MatchWithFilter(testFilter, testEntity));
+			Assert.IsTrue(EntityMatcher.MatchEntityWithFilter(testFilter, testEntity));
 		}
 
 		[ExpectedException]
 		public void ThrowExceptionWhenPassNullFilter()
 		{
-			EntityMatcher.FilterEntities(null);
+			EntityMatcher.GetMatchedEntities(null);
 		}
 
 		[Test()]
@@ -119,7 +119,7 @@ namespace ECSTests
 			testEntity.AddComponent(new FirstTestComponent());
 			testFilter.AnyOf(typeof(FirstTestComponent));
 
-			Assert.IsTrue(EntityMatcher.FilterEntities(testFilter).Contains(testEntity));
+			Assert.IsTrue(EntityMatcher.GetMatchedEntities(testFilter).Contains(testEntity));
 		}
 	}
 }
