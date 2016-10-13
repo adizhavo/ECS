@@ -37,6 +37,8 @@ namespace ECS
 
         public static bool MatchWithFilter(Filter request, Entity ent)
         {
+			if (request == null || ent == null) throw new ArgumentNullException ();
+
             return ent.HasAllComponents(request.AllType.ToArray()) 
                    && ent.HasAnyComponent(request.AnyType.ToArray()) 
                    && ent.HasNoneComponent(request.NoneType.ToArray());
@@ -44,6 +46,8 @@ namespace ECS
 
         public static HashSet<Entity> FilterEntities(Filter request)
         {
+			if (request == null) throw new ArgumentNullException ();
+
             return IncludeEntities(request, 
                         ExcludeEntities(request, 
                             subscribedEntities
@@ -65,7 +69,7 @@ namespace ECS
         {
             HashSet<Entity> result = new HashSet<Entity>();
             foreach(Entity ent in pool)
-                if (!ent.HasAnyComponent(request.NoneType.ToArray()))
+                if (ent.HasNoneComponent(request.NoneType.ToArray()))
                     result.Add(ent);
 
             return result;
