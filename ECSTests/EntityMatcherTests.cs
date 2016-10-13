@@ -55,6 +55,13 @@ namespace ECSTests
 			Assert.AreEqual(0, EntityMatcher.subscribedEntities.Count);
 		}
 
+		[ExpectedException]
+		public void ThrowExceptionWhenPassNullFilterOrNullEntity()
+		{
+			EntityMatcher.MatchWithFilter(null, testEntity);
+			EntityMatcher.MatchWithFilter(testFilter, null);
+		}
+
 		[Test()]
 		public void EntityShouldMatchFilterWithAllType()
 		{
@@ -98,6 +105,21 @@ namespace ECSTests
 			testEntity.RemoveAllComponent();
 			testFilter.NoneOf(typeof(FirstTestComponent), typeof(SecondTestComponent));
 			Assert.IsTrue(EntityMatcher.MatchWithFilter(testFilter, testEntity));
+		}
+
+		[ExpectedException]
+		public void ThrowExceptionWhenPassNullFilter()
+		{
+			EntityMatcher.FilterEntities(null);
+		}
+
+		[Test()]
+		public void ShouldMatchEntityReceivedFromFilter()
+		{
+			testEntity.AddComponent(new FirstTestComponent());
+			testFilter.AnyOf(typeof(FirstTestComponent));
+
+			Assert.IsTrue(EntityMatcher.FilterEntities(testFilter).Contains(testEntity));
 		}
 	}
 }
