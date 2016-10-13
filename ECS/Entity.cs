@@ -10,13 +10,13 @@ namespace ECS
 
         public Entity()
         {
-            EntityMatcher.SubscribeEntity(this);
+            EntityMatcher.Subscribe(this);
             components = new List<IComponent>();
         }
 
         ~Entity()
         {
-            EntityMatcher.UnsubscribeEntity(this);
+            EntityMatcher.Unsubscribe(this);
             RemoveAllComponent();
         }
 
@@ -86,6 +86,16 @@ namespace ECS
 
             return matchers.Length == 0 || (matchedComponents == matchers.Length && matchedComponents != 0);
         }
+
+		public bool HasNoneComponent(params Type[] matchers)
+		{
+			for (int i = 0; i < matchers.Length; i++)
+				foreach (IComponent cmp in components)
+					if (cmp.GetType().Equals(matchers[i]))
+						return false;
+			
+			return true;
+		}
 
         public bool HasAnyComponent(params Type[] matchers)
         {
