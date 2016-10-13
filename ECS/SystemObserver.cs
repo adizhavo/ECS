@@ -10,12 +10,15 @@ namespace ECS
 
         public static void Subscribe(IReactiveSystem system)
         {
+			if (system == null) throw new ArgumentNullException();
+
             if (!reactiveSystems.Contains(system)) reactiveSystems.Add(system);
             else Console.Write("System is already subscribed");
         }
 
         public static void Unsubscribe(IReactiveSystem system)
         {
+			if (system == null) throw new ArgumentNullException();
             if (reactiveSystems.Contains(system)) reactiveSystems.Remove(system);
         }
 
