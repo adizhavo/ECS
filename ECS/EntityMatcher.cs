@@ -15,8 +15,10 @@ namespace ECS
         public static event EntityAdded OnEntityRegistered;
 
         // Entity constructor will subriscribe with this method
-        public static void SubscribeEntity(Entity entity)
+        public static void Subscribe(Entity entity)
         {
+			if (entity == null) throw new ArgumentNullException();
+
             if (!subscribedEntities.Contains(entity))
             {
                 subscribedEntities.Add(entity);
@@ -26,9 +28,10 @@ namespace ECS
             else Console.WriteLine("Entity is already subscribed");
         }
 
-		// Entity constructor will unsubriscribe with this method
-        public static void UnsubscribeEntity(Entity entity)
+		// Entity deconstructor will unsubriscribe with this method
+        public static void Unsubscribe(Entity entity)
         {
+			if (entity == null) throw new ArgumentNullException();
             if (subscribedEntities.Contains(entity)) subscribedEntities.Remove(entity);
         }
 
@@ -36,7 +39,7 @@ namespace ECS
         {
             return ent.HasAllComponents(request.AllType.ToArray()) 
                    && ent.HasAnyComponent(request.AnyType.ToArray()) 
-                   && !ent.HasAnyComponent(request.NoneType.ToArray());
+                   && ent.HasNoneComponent(request.NoneType.ToArray());
         }
 
         public static HashSet<Entity> FilterEntities(Filter request)
