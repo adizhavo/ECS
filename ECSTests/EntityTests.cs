@@ -144,6 +144,18 @@ namespace ECSTests
 			testEntity.RemoveComponent<SecondTestComponent> ();
 			Assert.IsTrue(testEntity.HasAnyComponent(anyTypes));
 		}
+
+		[Test()]
+		public void ShouldNotMatchNoneComponent()
+		{
+			testEntity.AddComponent(firstComponent);
+			
+			Type[] noneType = new Type[] {typeof(FirstTestComponent)};
+			Assert.IsFalse(testEntity.HasNoneComponent(noneType));
+
+			testEntity.RemoveComponent<FirstTestComponent>();
+			Assert.IsTrue(testEntity.HasNoneComponent(noneType));
+		}
 	}
 
 	public class FirstTestComponent : IComponent
