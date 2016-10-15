@@ -8,6 +8,7 @@ namespace ECSTests
 	public class EntityTests
 	{
 		private Entity testEntity;
+		private Filter testFilter;
 		private FirstTestComponent firstComponent;
 		private SecondTestComponent secondComponent;
 
@@ -15,8 +16,16 @@ namespace ECSTests
 		public void SetUp()
 		{
 			testEntity = new Entity();
+			testFilter = new Filter();
 			firstComponent = new FirstTestComponent();
 			secondComponent = new SecondTestComponent();
+		}
+
+		[TearDown()]
+		public void TearDown()
+		{
+			testFilter.Reset();
+			testEntity.RemoveAllComponent();
 		}
 
 		[Test()]
@@ -155,6 +164,57 @@ namespace ECSTests
 
 			testEntity.RemoveComponent<FirstTestComponent>();
 			Assert.IsTrue(testEntity.HasNoneComponent(noneType));
+		}
+
+		[ExpectedException]
+		public void ThrowExceptionWhenPassNullFilter()
+		{
+			testEntity.DoesMatchFilter(null);
+		}
+		
+		[Test()]
+		public void EntityShouldMatchFilterWithAllType()
+		{
+			testEntity.AddComponent(new FirstTestComponent());
+			testEntity.AddComponent(new SecondTestComponent());
+			
+			testFilter.AllOf(typeof(FirstTestComponent), typeof(SecondTestComponent));
+			Assert.IsTrue(testEntity.DoesMatchFilter(testFilter));
+		}
+		
+		[Test()]
+		public void EntityShouldMatchFilterWithAnyType()
+		{
+			testEntity.AddComponent(new FirstTestComponent());
+			testEntity.AddComponent(new SecondTestComponent());
+			
+			testFilter.AnyOf(typeof(FirstTestComponent));
+			Assert.IsTrue(testEntity.DoesMatchFilter(testFilter));
+			
+			testFilter.Reset ();
+			
+			testFilter.AnyOf(typeof(SecondTestComponent));
+			Assert.IsTrue(testEntity.DoesMatchFilter(testFilter));
+		}
+		
+		[Test()]
+		public void EntityShouldMatchFilterWithNoneType()
+		{
+			testEntity.AddComponent(new FirstTestComponent());
+			testEntity.AddComponent(new SecondTestComponent());
+			
+			testFilter.NoneOf(typeof(FirstTestComponent));
+			Assert.IsFalse(testEntity.DoesMatchFilter(testFilter));
+			
+			testFilter.Reset();
+			
+			testFilter.NoneOf(typeof(SecondTestComponent));
+			Assert.IsFalse(testEntity.DoesMatchFilter(testFilter));
+			
+			testFilter.Reset();
+			testEntity.RemoveAllComponent();
+			testFilter.NoneOf(typeof(FirstTestComponent), typeof(SecondTestComponent));
+			Assert.IsTrue(testEntity.DoesMatchFilter(testFilter));
 		}
 	}
 

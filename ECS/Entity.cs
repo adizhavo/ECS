@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace ECS
@@ -61,6 +62,28 @@ namespace ECS
             AddComponent(replaceComponent, notifySystems);
         }
 
+		public void RemoveComponent<T>() where T : class, IComponent
+		{
+			for(int i = 0; i < components.Count; i ++)
+				if (components[i] is T)
+			{
+				components[i].entity = null;
+				components.RemoveAt(i);
+				i --;
+			}
+		}
+		
+		public void RemoveAllComponent()
+		{
+			for (int i = 0; i < components.Count; i++)
+			{
+				components[i].entity = null;
+				components.RemoveAt(i);
+			}
+			
+			components.Clear();
+		}
+		
 		public List<T> GetComponents<T>() where T : class, IComponent
 		{
 			List<T> requestedComponents = new List<T>();
@@ -72,8 +95,26 @@ namespace ECS
 			return requestedComponents;
 		}
 
-        public bool HasAllComponents(params Type[] matchers)
-        {
+		public bool HasComponent<T>() where T : class, IComponent
+		{
+			foreach (IComponent cmp in components)
+				if (cmp is T) return true;
+			
+			return false;
+		}
+		
+		public bool HasAnyComponent(params Type[] matchers)
+		{
+			for (int i = 0; i < matchers.Length; i++)
+				foreach (IComponent cmp in components)
+					if (cmp.GetType().Equals(matchers[i]))
+						return true;
+			
+			return matchers.Length == 0;
+		}
+		
+		public bool HasAllComponents(params Type[] matchers)
+		{
             int matchedComponents = 0;
 
             for (int i = 0; i < matchers.Length; i++)
@@ -96,45 +137,14 @@ namespace ECS
 			
 			return true;
 		}
-
-        public bool HasAnyComponent(params Type[] matchers)
-        {
-            for (int i = 0; i < matchers.Length; i++)
-                foreach (IComponent cmp in components)
-                    if (cmp.GetType().Equals(matchers[i]))
-                        return true;
-
-            return matchers.Length == 0;
-        }
-
-        public bool HasComponent<T>() where T : class, IComponent
-        {
-            foreach (IComponent cmp in components)
-                if (cmp is T) return true;
-            
-            return false;
-        }
-
-        public void RemoveComponent<T>() where T : class, IComponent
-        {
-			for(int i = 0; i < components.Count; i ++)
-				if (components[i] is T)
-                {
-					components[i].entity = null;
-                    components.RemoveAt(i);
-					i --;
-                }
-        }
-
-        public void RemoveAllComponent()
-        {
-            for (int i = 0; i < components.Count; i++)
-            {
-                components[i].entity = null;
-                components.RemoveAt(i);
-            }
-
-            components.Clear();
-        }
+		
+		public bool DoesMatchFilter(Filter request)
+		{
+			if (request == null) throw new ArgumentNullException ();
+			
+			return HasAllComponents(request.AllType.ToArray()) 
+				   && HasAnyComponent(request.AnyType.ToArray()) 
+				   && HasNoneComponent(request.NoneType.ToArray());
+		}
     }
 }
