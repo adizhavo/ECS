@@ -26,10 +26,8 @@ namespace ECS
         public static void NotifySystems(Entity modifiedEntity)
         {
             foreach(IReactiveSystem rs in reactiveSystems)
-            {
-                bool doesMatch = EntityMatcher.MatchEntityWithFilter(rs.filterMatch, modifiedEntity);
-                if (doesMatch) rs.Execute(modifiedEntity);
-            }
+                if (modifiedEntity.DoesMatchFilter(rs.filterMatch)) 
+					rs.Execute(modifiedEntity);
         }
     }
 }

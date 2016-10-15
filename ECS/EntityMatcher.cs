@@ -35,15 +35,6 @@ namespace ECS
             if (subscribedEntities.Contains(entity)) subscribedEntities.Remove(entity);
         }
 
-        public static bool MatchEntityWithFilter(Filter request, Entity ent)
-        {
-			if (request == null || ent == null) throw new ArgumentNullException ();
-
-            return ent.HasAllComponents(request.AllType.ToArray()) 
-                   && ent.HasAnyComponent(request.AnyType.ToArray()) 
-                   && ent.HasNoneComponent(request.NoneType.ToArray());
-        }
-
         public static HashSet<Entity> GetMatchedEntities(Filter request)
         {
 			if (request == null) throw new ArgumentNullException ();
