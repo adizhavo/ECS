@@ -22,12 +22,12 @@ namespace ECS
         }
 
 		// Add new component to the entity, can support doubles of components
-        public void AddComponent(IComponent newComponent, bool notifySystems = true)
+        public Entity AddComponent(IComponent newComponent, bool notifySystems = true)
         {
             if (newComponent == null)
             {
                 Console.WriteLine("Component that you intented to add is null, method will return void");
-                return;
+                return this;
             }
 
             components.Add(newComponent);
@@ -35,6 +35,7 @@ namespace ECS
 
             // Notifies systems so they can perfom operations, like manipulating componet data
             if (notifySystems) SystemObserver.NotifySystems(this);
+			return this;
         }
 
 		// Will replace component if there is a match, if not it will add it as a new component
@@ -43,7 +44,7 @@ namespace ECS
             if (replaceComponent == null)
             {
                 Console.WriteLine("Component that you intented to replace is null, method will return void");
-                return;
+                return this;
             }
 
             for (int i = 0; i < components.Count; i++)
@@ -55,11 +56,11 @@ namespace ECS
 
                     // Notifies systems so they can perfom operations, like manipulating componet data
                     if (notifySystems) SystemObserver.NotifySystems(this);
-                    return;
+                    return this;
                 }
 
             Console.WriteLine("No match for the component, will be added as a new component to the entity");
-            AddComponent(replaceComponent, notifySystems);
+            return AddComponent(replaceComponent, notifySystems);
         }
 
 		public void RemoveComponent<T>() where T : class, IComponent
@@ -82,6 +83,15 @@ namespace ECS
 			}
 			
 			components.Clear();
+		}
+
+		public T GetComponent<T>() where T : class, IComponent
+		{
+			foreach (IComponent cmp in components)
+				if (cmp is T)
+					return (T)cmp;
+
+			return null;
 		}
 		
 		public List<T> GetComponents<T>() where T : class, IComponent
