@@ -2,8 +2,8 @@
 
 |Languages|
 ---
-|[C++](https://github.com/adizhavo/ECS)|
-|[C#](https://github.com/adizhavo/ECS_Cpp)|
+|[C++](https://github.com/adizhavo/ECS_Cpp)|
+|[C#](https://github.com/adizhavo/ECS)|
 
 ECS is a simple [entity component system](https://en.wikipedia.org/wiki/Entity_component_system) framework.
 It uses generics to achieve composition without having the need to write new code inside the container class which is called entity.
