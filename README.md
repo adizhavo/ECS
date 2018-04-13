@@ -1,5 +1,7 @@
 # ECS
 
+[![Build Status](https://travis-ci.org/adizhavo/ECS.svg?branch=master)](https://travis-ci.org/adizhavo/ECS)
+
 |Languages|
 |---|
 |[C++](https://github.com/adizhavo/ECS_Cpp)|
@@ -8,12 +10,12 @@
 ECS is a simple [entity component system](https://en.wikipedia.org/wiki/Entity_component_system) framework.
 It uses generics to achieve composition without having the need to write new code inside the container class which is called entity.
 
-The class diagram below will make easier to understand how the system works. 
+The class diagram below will make easier to understand how the system works.
 
 <div style="text-align:center"><img src ="/Diagrams/ECS_ClassDiagram.png?raw=true" /></div>
 
 
-As said before, an entity is simply composed by small chunks of data or behaviours. 
+As said before, an entity is simply composed by small chunks of data or behaviours.
 Systems are listeners and they are ready to reach any modified entity which matches the defined filter of components.
 
 # How it works
@@ -27,7 +29,7 @@ public class Position : IComponent
   #region IComponent implementation
   public Entity { set; get; }
   #endregion
-  
+
   public float x, y, z;
 }
 ```
@@ -78,19 +80,18 @@ Implement ```IReactiveSystem``` interface to create one.
 public class RockPlacement : IReactiveSystem
 {
   #region IReactiveSystem implementation
-  public filterMatch 
+  public filterMatch
   {
     get { return new Filter().AllOf(typeOf(Position), typeOf(Rigidbody)); }
   }
-  
+
   public void Execute(Entity rock)
   {
-    rock.GetComponent<Position>().x = 320f; 
-    rock.GetComponent<Position>().z = 100f; 
+    rock.GetComponent<Position>().x = 320f;
+    rock.GetComponent<Position>().z = 100f;
   }
   #endregion
 }
 ```
 # Conclusion
 These are very simple operations, to better understand the system and what else is possible i suggest to have a look at the [test cases](/ECSTests/) of the project
-
