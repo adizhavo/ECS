@@ -57,10 +57,10 @@ namespace ECSTests
 
 
         [Test()]
-        public void ShouldNotSubscibeBlankId()
+        public void ShouldSubscibeBlankId()
         {
             EntityMatcher.Subscribe(testEntity);
-            Assert.AreEqual(0, EntityMatcher.subscribedEntities.Count);
+            Assert.AreNotEqual(0, EntityMatcher.subscribedEntities.Count);
         }
 
         [Test()]

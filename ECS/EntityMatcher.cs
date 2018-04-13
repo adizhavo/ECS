@@ -18,11 +18,8 @@ namespace ECS
         public static void Subscribe(Entity entity)
         {
 			if (entity == null) throw new ArgumentNullException();
-
-			if (string.IsNullOrEmpty(entity.Id))
-				throw new Exception("The Entity Id you entered was blank or null.");
-
-			if (subscribedEntities.Any(ent => ent.Id == entity.Id))
+	        
+			if ( !string.IsNullOrEmpty(entity.Id) &&  subscribedEntities.Any(ent => ent.Id == entity.Id))
 				throw new Exception("This entity already exists.");
 
             if (!subscribedEntities.Contains(entity))

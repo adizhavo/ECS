@@ -9,10 +9,8 @@ namespace ECS
 	{
         public readonly List<IComponent> components;
 
-        public Entity()
+        public Entity() : this(string.Empty)
         {
-            EntityMatcher.Subscribe(this);
-            components = new List<IComponent>();
         }
 
 		public Entity(string _id)
