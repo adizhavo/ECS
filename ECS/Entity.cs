@@ -39,7 +39,7 @@ namespace ECS
         }
 
 		// Will replace component if there is a match, if not it will add it as a new component
-        public void ReplaceComponent(IComponent replaceComponent, bool notifySystems = true)
+        public Entity ReplaceComponent(IComponent replaceComponent, bool notifySystems = true)
         {
             if (replaceComponent == null)
             {
