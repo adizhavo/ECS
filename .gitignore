@@ -38,3 +38,5 @@ Cubeblast.app/Contents/Data/Managed/Assembly-CSharp.dll
 ECS/ECS/bin/Debug
 ECSTests/bin/Debug
 ECS/bin/Debug
+ECS/bin
+ECSTests/bin
