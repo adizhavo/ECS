@@ -55,7 +55,23 @@ namespace ECSTests
 			Assert.AreEqual(0, EntityMatcher.subscribedEntities.Count);
 		}
 
-		[ExpectedException]
+
+        [Test()]
+        public void ShouldNotSubscibeBlankId()
+        {
+            EntityMatcher.Subscribe(testEntity);
+            Assert.AreEqual(0, EntityMatcher.subscribedEntities.Count);
+        }
+
+        [Test()]
+        public void ShouldNotDuplicateIds()
+        {
+            EntityMatcher.Subscribe(testEntity);
+            EntityMatcher.Subscribe(testEntity);
+            Assert.AreEqual(1, EntityMatcher.subscribedEntities.Count);
+        }
+
+        [ExpectedException]
 		public void ThrowExceptionWhenPassNullFilter()
 		{
 			EntityMatcher.GetMatchedEntities(null);
