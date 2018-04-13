@@ -1,6 +1,6 @@
 #!/bin/bash
 
 # Build solution
-msbuild /p:Configuration=Release ./ECS.sln
+msbuild /p:Configuration=Release ECS.sln
 # Run test suits
 mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./ECSTests/bin/Release/ECSTests.dll
