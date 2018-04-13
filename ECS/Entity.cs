@@ -88,7 +88,7 @@ namespace ECS
             return AddComponent(replaceComponent, notifySystems);
         }
 
-		public void RemoveComponents<T>() where T : class, IComponent
+		public void RemoveComponent<T>() where T : class, IComponent
 		{
 			for(int i = 0; i < components.Count; i ++)
 				if (components[i] is T)
