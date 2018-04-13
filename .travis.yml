@@ -1,0 +1,11 @@
+language: csharp
+solution: ECS.sln
+dist: trusty
+install:
+# set permissions
+ - chmod +x ./Scripts/install.bsh
+ - chmod +x ./Scripts/build.bsh
+
+ - ./Scripts/install.bsh
+script:
+ - ./Scripts/build.bsh
