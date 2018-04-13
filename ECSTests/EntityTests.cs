@@ -1,6 +1,7 @@
 using System;
 using NUnit.Framework;
 using ECS;
+using System.Collections.Generic;
 
 namespace ECSTests
 {
@@ -11,8 +12,9 @@ namespace ECSTests
 		private Filter testFilter;
 		private FirstTestComponent firstComponent;
 		private SecondTestComponent secondComponent;
+        private IComponent[] componentList;
 
-		[SetUp]
+        [SetUp]
 		public void SetUp()
 		{
 			testEntity = new Entity();
@@ -25,7 +27,7 @@ namespace ECSTests
 		public void TearDown()
 		{
 			testFilter.Reset();
-			testEntity.RemoveAllComponent();
+			testEntity.RemoveAllComponents();
 		}
 
 		[Test()]
@@ -93,7 +95,7 @@ namespace ECSTests
 			testEntity.AddComponent(firstComponent);
 			testEntity.AddComponent(firstComponent);
 			testEntity.AddComponent(secondComponent);
-			testEntity.RemoveAllComponent();
+			testEntity.RemoveAllComponents();
 			Assert.IsFalse(testEntity.HasComponent<FirstTestComponent>());
 			Assert.IsFalse(testEntity.HasComponent<SecondTestComponent>());
 		}
@@ -212,10 +214,19 @@ namespace ECSTests
 			Assert.IsFalse(testEntity.DoesMatchFilter(testFilter));
 			
 			testFilter.Reset();
-			testEntity.RemoveAllComponent();
+			testEntity.RemoveAllComponents();
 			testFilter.NoneOf(typeof(FirstTestComponent), typeof(SecondTestComponent));
 			Assert.IsTrue(testEntity.DoesMatchFilter(testFilter));
 		}
+
+        [Test()]
+        public void AddMultipleComponentsToEntity()
+        {
+            componentList = new IComponent[2] { firstComponent, secondComponent };
+
+            testEntity.AddComponents(true, componentList);
+            Assert.AreEqual(2, testEntity.components.Count);
+        }
 	}
 
 	public class FirstTestComponent : IComponent

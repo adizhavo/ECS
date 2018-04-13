@@ -19,6 +19,12 @@ namespace ECS
         {
 			if (entity == null) throw new ArgumentNullException();
 
+			if (string.IsNullOrEmpty(entity.Id))
+				throw new Exception("The Entity Id you entered was blank or null.");
+
+			if (subscribedEntities.Any(ent => ent.Id == entity.Id))
+				throw new Exception("This entity already exists.");
+
             if (!subscribedEntities.Contains(entity))
             {
                 subscribedEntities.Add(entity);
@@ -27,6 +33,31 @@ namespace ECS
             }
             else Console.WriteLine("Entity is already subscribed");
         }
+
+		public static Entity GetEntity(string whichEntity)
+		{
+			return subscribedEntities.First(_ => _.Id == whichEntity);
+		}
+
+		public static bool DoesEntityExist(string whichEntity)
+		{
+			return subscribedEntities.Any(_ => _.Id == whichEntity);
+		}
+
+		public static void Remove(string whichEntity)
+		{
+			subscribedEntities.Remove(GetEntity(whichEntity));
+		}
+
+		public static bool Remove(Entity whichEntity)
+		{
+			return subscribedEntities.Remove(whichEntity);
+		}
+
+		public static void RemoveAll()
+		{
+			subscribedEntities.Clear();
+		}
 
 		// Entity deconstructor will unsubriscribe with this method
         public static void Unsubscribe(Entity entity)

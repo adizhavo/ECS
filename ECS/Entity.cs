@@ -5,8 +5,8 @@ using System.Collections.Generic;
 namespace ECS
 {
 	// is the facade for different components, a bag for data and simple operations
-    public class Entity
-    {
+    public class Entity : IEquatable<Entity>
+	{
         public readonly List<IComponent> components;
 
         public Entity()
@@ -15,11 +15,20 @@ namespace ECS
             components = new List<IComponent>();
         }
 
+		public Entity(string _id)
+		{
+			Id = _id;
+			EntityMatcher.Subscribe(this);
+			components = new List<IComponent>();
+		}
+
         ~Entity()
         {
             EntityMatcher.Unsubscribe(this);
-            RemoveAllComponent();
+			RemoveAllComponents();
         }
+
+		public string Id = string.Empty;
 
 		// Add new component to the entity, can support doubles of components
         public Entity AddComponent(IComponent newComponent, bool notifySystems = true)
@@ -38,8 +47,24 @@ namespace ECS
 			return this;
         }
 
+		public Entity AddComponents(bool notifySystems = true, params IComponent[] components)
+		{
+			foreach (IComponent i in components)
+			{
+				AddComponent(i);
+			}
+
+			if(components.Count() == 0)
+			{
+				Console.WriteLine("Component that you intented to add is null, method will return void");
+				return this;
+			}
+
+			return this;
+		}
+
 		// Will replace component if there is a match, if not it will add it as a new component
-        public void ReplaceComponent(IComponent replaceComponent, bool notifySystems = true)
+        public Entity ReplaceComponent(IComponent replaceComponent, bool notifySystems = true)
         {
             if (replaceComponent == null)
             {
@@ -74,7 +99,7 @@ namespace ECS
 			}
 		}
 		
-		public void RemoveAllComponent()
+		public void RemoveAllComponents()
 		{
 			for (int i = 0; i < components.Count; i++)
 			{
@@ -156,5 +181,10 @@ namespace ECS
 				   && HasAnyComponent(request.AnyType.ToArray()) 
 				   && HasNoneComponent(request.NoneType.ToArray());
 		}
-    }
+
+		public bool Equals(Entity other)
+		{
+			return this.Id == other.Id;
+		}
+	}
 }
